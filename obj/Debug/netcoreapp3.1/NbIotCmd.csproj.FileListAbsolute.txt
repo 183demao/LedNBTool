@@ -50,4 +50,10 @@ C:\Users\chenhaoming\source\repos\NbIotCmd\bin\Debug\netcoreapp3.1\runtimes\win-
 C:\Users\chenhaoming\source\repos\NbIotCmd\bin\Debug\netcoreapp3.1\runtimes\win-x86\native\sni.dll
 C:\Users\chenhaoming\source\repos\NbIotCmd\bin\Debug\netcoreapp3.1\runtimes\unix\lib\netcoreapp2.0\System.Runtime.Caching.dll
 C:\Users\chenhaoming\source\repos\NbIotCmd\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp2.0\System.Runtime.Caching.dll
+C:\Users\chenhaoming\source\repos\NbIotCmd\bin\Debug\netcoreapp3.1\appsettings.json
+C:\Users\chenhaoming\source\repos\NbIotCmd\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.Cryptography.Internal.dll
+C:\Users\chenhaoming\source\repos\NbIotCmd\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll
+C:\Users\chenhaoming\source\repos\NbIotCmd\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll
+C:\Users\chenhaoming\source\repos\NbIotCmd\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Identity.Core.dll
+C:\Users\chenhaoming\source\repos\NbIotCmd\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Identity.Stores.dll
 C:\Users\chenhaoming\source\repos\NbIotCmd\obj\Debug\netcoreapp3.1\NbIotCmd.csproj.CoreCompileInputs.cache

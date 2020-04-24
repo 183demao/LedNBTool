@@ -7,7 +7,7 @@ namespace NbIotCmd.Entity
     /// NB报警表
     /// </summary>
     [Table("TNL_AlarmInfo")]
-    public class TNL_AlarmInfo
+    public class TNL_AlarmInfo  
     {
         /// <summary>
         ///主键自增

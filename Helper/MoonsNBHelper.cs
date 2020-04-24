@@ -3,23 +3,10 @@ using System;
 using Led.Tools;
 using System.Collections;
 using System.Linq;
+using Led.SingleLight;
 
 namespace Led.MoonsNBCmdWrapper
 {
-    public class Register
-    {
-        public byte Key { get; set; }
-
-        public byte Channel { get; set; }
-
-        public object Value { get; set; }
-
-        public byte ErrCode { get; set; }
-
-        public int Len { get; set; }
-
-        public byte[] ByteData { get; set; }
-    }
 
     public class MoonsNBFrameType
     {
@@ -36,7 +23,7 @@ namespace Led.MoonsNBCmdWrapper
 
     public static class MoonsNBHelper
     {
-        private static object lockObj = new object();
+        private static object _lock = new object();
 
         private static int _MessageId = 0;
 
@@ -127,7 +114,7 @@ namespace Led.MoonsNBCmdWrapper
         /// <returns></returns>
         public static int NextMessageID()
         {
-            lock(lockObj)
+            lock (_lock)
             {
                 _MessageId++;
                 if (_MessageId >= 65536)
@@ -231,11 +218,25 @@ namespace Led.MoonsNBCmdWrapper
             return Guid.NewGuid().ToByteArray();
         }
 
+        /// <summary>
+        /// UUID字节数组转字符串
+        /// </summary
+        public static string GetString_UUID(byte[] bytes)
+        {
+            return DataHelper.BytesToHexStr(bytes);
+        }
+
+
         #endregion
 
         #region 直接调光(0x03)
 
-        public static byte[] GetBytes_Cmd03(int dimmingValue, byte channel = 0x00)
+        public static byte[] GetBytes_Dimming(int dimmingValue, byte[] uuid)
+        {
+            return GetBytes_Cmd03(dimmingValue, uuid);
+        }
+
+        public static byte[] GetBytes_Cmd03(int dimmingValue, byte[] uuid, byte channel = 0x00)
         {
             var byteList = new List<byte>();
             var bytePD = new List<byte>();
@@ -251,7 +252,11 @@ namespace Led.MoonsNBCmdWrapper
             byteList.AddRange(bytesDateTime);
 
             //UUID
-            byteList.AddRange(GetBytes_NewUUID());
+            if (uuid == null || uuid.Length == 0)
+            {
+                uuid = GetBytes_NewUUID();
+            }
+            byteList.AddRange(uuid);
 
             //Cmd
             byteList.Add(0x03);
@@ -396,8 +401,9 @@ namespace Led.MoonsNBCmdWrapper
                 }
 
                 // 组0=Org 组1=Area 组2=Line 组3=Section 组4=Group
-                else if (key == 0x2E || key == 0x2F || key == 0x30 || key == 0x31 || key == 0x32 
-                    || key == 0x33 || key == 0x34 || key == 0x35) {
+                else if (key == 0x2E || key == 0x2F || key == 0x30 || key == 0x31 || key == 0x32
+                    || key == 0x33 || key == 0x34 || key == 0x35)
+                {
                     bytePD.Add(key);
                     bytePD.Add(channel);
                     bytePD.Add(0x04);
@@ -410,7 +416,7 @@ namespace Led.MoonsNBCmdWrapper
                     bytePD.Add(channel);
                     bytePD.Add(0x01);
                     bytePD.Add((byte)ht[key]);
-                } 
+                }
                 else
                 {
                     continue;
@@ -622,7 +628,7 @@ namespace Led.MoonsNBCmdWrapper
 
             ht.Add(Frame_Field_Cmd, byteData.Skip(startIndex).Take(1).ToArray());
             startIndex++;
-            
+
             hstr = DataHelper.BytesToHexStr(byteData.Skip(startIndex).Take(2).ToArray());
             ht.Add(Frame_Field_MessageID, Convert.ToUInt16(hstr, 16));
             startIndex += 2;
@@ -646,11 +652,11 @@ namespace Led.MoonsNBCmdWrapper
                 if (reg.Key == 0x01 || reg.Key == 0x02)
                 {
                     reg.Value = reg.ByteData[0];
-                } 
+                }
                 else if (reg.Key == 0x04 || reg.Key == 0x05)
                 {
                     reg.Value = Convert.ToUInt32(DataHelper.BytesToHexStr(reg.ByteData), 16);
-                } 
+                }
                 else
                 {
                     continue;
@@ -665,9 +671,105 @@ namespace Led.MoonsNBCmdWrapper
         #endregion
 
         #region 全年调光计划设置(0x09)
-        public static byte[] GetBytes_Cmd09()
+
+        public static byte[] GetBytes_SingleLightTimePlan(SingleLightDimmingScheme SingleLightDimmingScheme)
         {
-            return null;
+            return GetBytes_Cmd09(SingleLightDimmingScheme);
+        }
+
+        /// <summary>
+        /// 全年调光计划设置(0x09) 组包
+        /// </summary>
+        public static byte[] GetBytes_Cmd09(SingleLightDimmingScheme SingleLightDimmingScheme)
+        {
+            var byteList = new List<byte>();
+            var bytePD = new List<byte>();
+            var bytesDateTime = GetBytes_DateTime(DateTime.Now);
+
+            //Head
+            byteList.Add(IotToDevice_HeadByte);
+
+            //FrameType
+            byteList.Add(GetByte_DefaultCommandFrameType());
+
+            //Time
+            byteList.AddRange(bytesDateTime);
+
+            //UUID
+            byteList.AddRange(GetBytes_NewUUID());
+
+            //Cmd
+            byteList.Add(0x03);
+
+            //MessageID
+            byteList.AddRange(GetBytes_RandMessageID());
+
+            //Ack
+            byteList.Add(0x00);
+
+            //PD 
+            //经度、纬度
+            bytePD.AddRange(DataHelper.UIntToByte4((int)(SingleLightDimmingScheme.Lon * 100 * 10000)));
+            bytePD.AddRange(DataHelper.UIntToByte4((int)(SingleLightDimmingScheme.Lat * 100 * 10000)));
+
+            //网关时区，例如 +-8
+            bytePD.Add((byte)SingleLightDimmingScheme.BaseUtcOffset);
+
+            foreach (var m in SingleLightDimmingScheme.SchemeItems)
+            {
+                // 夏令时
+                if (m.Item_Mode == 7)
+                {
+                    //模式
+                    //bytePD.Add((byte)m.Item_Mode);
+
+                    //周掩码
+                    //bytePD.Add((byte)m.Item_Week);
+
+                    //夏令时
+                    //if (SingleLightDimmingScheme.RuleForDayLight.IsFixedDateRule)
+                    //{
+                    //    var hstr = $"{SingleLightDimmingScheme.RuleForDayLight.StartMonth.ToString("X")}"
+                    //        + $"{ SingleLightDimmingScheme.RuleForDayLight.StartDay.ToString("X2") }"
+                    //        + $"{SingleLightDimmingScheme.RuleForDayLight.EndMonth.ToString("X")}"
+                    //        + $"{ SingleLightDimmingScheme.RuleForDayLight.EndDay.ToString("X2") }";
+                    //    bytePD.AddRange(DataHelper.HexStringToByte(hstr));
+                    //    bytePD.Add((byte)SingleLightDimmingScheme.RuleForDayLight.DaylightDelta);
+                    //}
+                    //else
+                    //{
+                    //    var hstr = $"{SingleLightDimmingScheme.RuleForDayLight.StartMonth.ToString("X")}{SingleLightDimmingScheme.RuleForDayLight.StartWeekofMonth.ToString("X")}"
+                    //        + $"{SingleLightDimmingScheme.RuleForDayLight.StartDayOfWeek.ToString("X")}{SingleLightDimmingScheme.RuleForDayLight.EndMonth.ToString("X")}"
+                    //        + $"{SingleLightDimmingScheme.RuleForDayLight.EndWeekofMonth.ToString("X")}{SingleLightDimmingScheme.RuleForDayLight.EndDayOfWeek.ToString("X")}";
+                    //    bytePD.AddRange(DataHelper.HexStringToByte(hstr));
+                    //    bytePD.Add((byte)SingleLightDimmingScheme.RuleForDayLight.DaylightDelta);
+                    //}
+                }
+                else
+                {
+                    bytePD.Add((byte)m.Item_Mode);
+                    bytePD.Add((byte)m.Item_Week);
+                    bytePD.AddRange(DataHelper.UInt16ToByte2(m.Item_Time));
+                    bytePD.Add((byte)m.Item_Channel);
+                    bytePD.Add((byte)m.Item_DimmingValue);
+                }
+            }
+
+            //Length
+            byteList.AddRange(DataHelper.UInt16ToByte2(bytePD.Count));
+
+            //PD
+            byteList.AddRange(bytePD);
+
+            //CRC
+            byteList.AddRange(DataHelper.GetCRC16_2Bytes(byteList.ToArray()));
+
+            //结束标志
+            byteList.Add(IotToDevice_TailByte);
+
+            bytePD = null;
+
+            return byteList.ToArray();
         }
 
         #endregion
@@ -896,7 +998,7 @@ namespace Led.MoonsNBCmdWrapper
             {
                 bytePD.AddRange(GetBytes_DateTimeList(dtList));
             }
- 
+
             //CRC
             byteList.AddRange(DataHelper.UInt16ToByte2(bytePD.Count));
             byteList.AddRange(bytePD);
@@ -943,7 +1045,7 @@ namespace Led.MoonsNBCmdWrapper
             byteList.Add(0x00);
 
             //len
-            byteList.AddRange(new byte[] { 0x00, 0x00});
+            byteList.AddRange(new byte[] { 0x00, 0x00 });
 
             //CRC
             byteList.AddRange(DataHelper.GetCRC16_2Bytes(byteList.ToArray()));

@@ -8,7 +8,7 @@ namespace NbIotCmd.Entity
     /// 多通道单灯实时表
     /// </summary>
     [Table("TNL_TunnelLightChanAlm")]
-    public class TNL_TunnelLightChanAlm
+    public class TNL_TunnelLightChanAlm  
     {
         /// <summary>主键自增</summary>	                                    
         [Key]

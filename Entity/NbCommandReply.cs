@@ -7,7 +7,7 @@ namespace NbIotCmd.Entity
     /// 回复指令表
     /// </summary>
     [Table("NbCommandReply")]
-    public class NbCommandReply
+    public class NbCommandReply 
     {
         /// <summary>主键自增</summary>	                                        
         [Key]

@@ -12,7 +12,15 @@ namespace NbIotCmd.Entity
     {
         /// <summary>主键自增</summary>	                         
         [Key]
-        public int ID { get; set; }
+        public long ID { get; set; }
+        /// <summary>
+        /// 本地时间
+        /// </summary>
+        public DateTime LocalDate { get; set; }
+        /// <summary>
+        /// 本地时间
+        /// </summary>
+        public DateTime SampTime { get; set; }
         /// <summary>设备类型码</summary>	                     
         public string DeviceType { get; set; }
         /// <summary>硬件版本号</summary>	                     
@@ -34,7 +42,7 @@ namespace NbIotCmd.Entity
         /// <summary>注册的频段</summary>	                     
         public string BAND { get; set; }
         /// <summary>基站编号</summary>	                         
-        public string CELL_ID { get; set; }
+        public string CELLID { get; set; }
         /// <summary>接收信号强度</summary>	                     
         public string RSSI { get; set; }
         /// <summary>参考接收信号功率</summary>	                 

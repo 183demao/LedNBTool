@@ -7,7 +7,7 @@ namespace NbIotCmd.Entity
     /// NB单灯实时表
     /// </summary>
     [Table("TNL_TunnelLightAlm")]
-    public class TNL_TunnelLightAlm
+    public class TNL_TunnelLightAlm  
     {
         /// <summary>单灯ID</summary>	                      
         [Key]

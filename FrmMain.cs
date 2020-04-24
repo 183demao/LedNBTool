@@ -22,7 +22,7 @@ namespace NbIotCmd
 {
     public partial class FrmMain : Form
     {
-        private Notification notification = new Notification();
+        private WinformAsyncNotification notification = new WinformAsyncNotification();
 
         public FrmMain()
         {

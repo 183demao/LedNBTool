@@ -4,7 +4,7 @@ using System.Text;
 
 namespace NbIotCmd.Notify
 {
-    public class Notification
+    public class WinformAsyncNotification
     {
         public delegate void ShowMessage(string Message);
         /// <summary>

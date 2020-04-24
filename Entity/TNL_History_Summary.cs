@@ -7,7 +7,7 @@ namespace NbIotCmd.Entity
     /// NB历史记录表
     /// </summary>
     [Table("TNL_History_Summary")]
-    public class TNL_History_Summary
+    public class TNL_History_Summary  
     {
         /// <summary>
         /// 时间ID
