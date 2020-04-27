@@ -1,9 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using NbIotCmd.Handler;
+using NbIotCmd.IHandler;
 using NbIotCmd.NBEntity;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace NbIotCmd.Context
 {
@@ -16,34 +18,34 @@ namespace NbIotCmd.Context
         {
             _serviceProvider = serviceProvider;
         }
-        private List<TransmitHandler> mqttHandler = new List<TransmitHandler>();
+        private List<ITransmitHandler> mqttHandler = new List<ITransmitHandler>();
 
-        public void addHandler(TransmitHandler mqttHandler)
+        public void addHandler(ITransmitHandler mqttHandler)
         {
             this.mqttHandler.Add(mqttHandler);
         }
 
-        public void Run(TransmitData transmitData)
+        public async Task Run(TransmitData transmitData)
         {
-            var scope = _serviceProvider.CreateScope();
-            var serviceProvider = scope.ServiceProvider;
-            var eFContext = serviceProvider.GetService<EFContext>();
+            //var scope = _serviceProvider.CreateScope();
+            //var serviceProvider = scope.ServiceProvider;
+            //var eFContext = serviceProvider.GetService<EFContext>();
             try
             {
                 foreach (var handler in mqttHandler)
                 {
-                    handler.Run(transmitData);
+                    await handler.Run(transmitData);
                 }
-                eFContext.SaveChangesAsync();
+                //eFContext.SaveChangesAsync();
             }
             catch (Exception ex)
             {
             }
-            finally
-            {
-                eFContext.DisposeAsync();
-                scope.Dispose();
-            }
+            //finally
+            //{
+            //    eFContext.DisposeAsync();
+            //    scope.Dispose();
+            //}
 
         }
     }

@@ -1,9 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using NbIotCmd.Handler;
+using NbIotCmd.IHandler;
 using NbIotCmd.NBEntity;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace NbIotCmd.Context
 {
@@ -18,42 +20,42 @@ namespace NbIotCmd.Context
         }
 
         private List<Type> handlerTypeList = new List<Type>();
+        public List<IUploadHandler> mqttHandler = new List<IUploadHandler>();
+        //public void AddHandler<THandler>()
+        //    where THandler : class
+        //{
+        //    handlerTypeList.Add(typeof(THandler));
+        //}
 
-        public void AddHandler<THandler>()
-            where THandler : class
+        public async Task Run(UploadOriginData uploadOrigin)
         {
-            handlerTypeList.Add(typeof(THandler));
-        }
+            //var scope = _serviceProvider.CreateScope();
+            //var serviceProvider = scope.ServiceProvider;
 
-        public void Run(UploadOriginData uploadOrigin)
-        {
-            var scope = _serviceProvider.CreateScope();
-            var serviceProvider = scope.ServiceProvider;
 
-          
-            var dbContextAccessor = serviceProvider.GetService<IDbContextAccessor>();
-            dbContextAccessor.Outer = serviceProvider.GetService<EFContext>();
+            //var dbContextAccessor = serviceProvider.GetService<IDbContextAccessor>();
+            //dbContextAccessor.Outer = serviceProvider.GetService<EFContext>();
 
-            var asyncLocalCurrentUnitOfWorkProvider = serviceProvider.GetService<AsyncLocalCurrentUnitOfWorkProvider>();
-            asyncLocalCurrentUnitOfWorkProvider.Current = dbContextAccessor;
+            //var asyncLocalCurrentUnitOfWorkProvider = serviceProvider.GetService<AsyncLocalCurrentUnitOfWorkProvider>();
+            //asyncLocalCurrentUnitOfWorkProvider.Current = dbContextAccessor;
 
             try
             {
-                foreach (var type in handlerTypeList)
+                foreach (var uploadHandler in mqttHandler)
                 {
-                    var handler = serviceProvider.GetService(type) as UploadHandler;
-                    handler.Run(uploadOrigin);
+                    //var handler = serviceProvider.GetService(type) as UploadHandler;
+                    await uploadHandler.Run(uploadOrigin);
                 }
-                dbContextAccessor.Outer.SaveChangesAsync();
+                //dbContextAccessor.Outer.SaveChangesAsync();
             }
             catch (Exception ex)
             {
             }
-            finally
-            {
-                dbContextAccessor.Dispose();
-                scope.Dispose();
-            }
+            //finally
+            //{
+            //    dbContextAccessor.Dispose();
+            //    scope.Dispose();
+            //}
 
         }
     }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Extensions.DependencyInjection;
+using NbIotCmd.Handler;
 
 namespace NbIotCmd.Context
 {
@@ -28,8 +29,10 @@ namespace NbIotCmd.Context
             {
                 uploadSchedule = IocManager.ServiceProvider.GetService<UploadSchedule>();
                 var lightHandler = IocManager.ServiceProvider.GetService<LightHandler>();
-                uploadSchedule.AddHandler<LightHandler>();
-
+                var nbCommandReplyHandler = IocManager.ServiceProvider.GetService<NbCommandReplyHandler>();
+                //uploadSchedule.AddHandler<LightHandler>();
+                uploadSchedule.mqttHandler.Add(lightHandler);
+                uploadSchedule.mqttHandler.Add(nbCommandReplyHandler);
             }
             catch (Exception e)
             {

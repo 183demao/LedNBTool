@@ -4,13 +4,13 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NbIotCmd.Handler
+namespace NbIotCmd.IHandler
 {
-    public interface UploadHandler
+    public interface ITransmitHandler
     {
         /// <summary>
         /// 默认执行
         /// </summary>
-        public Task Run(UploadOriginData originData);
+        public Task Run(TransmitData transmitData);
     }
 }

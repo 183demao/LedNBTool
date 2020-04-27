@@ -49,29 +49,37 @@ namespace NbIotCmd.Helper
                 uploadOriginData.frameType = messages[index += 1];//1
                 //帧类型
                 string frametype = Convert.ToString(uploadOriginData.frameType, 2).PadLeft(8, '0');
+                uploadOriginData.hasUUID = frametype.Substring(3, 1) == "1";//uuid
                 uploadOriginData.hasAddress = frametype.Substring(4, 1) == "1";
                 uploadOriginData.hasTimeStramp = frametype.Substring(5, 1) == "1";
                 uploadOriginData.actived = frametype.Substring(6, 1) == "1";
                 uploadOriginData.requested = frametype.Substring(7, 1) == "1";
-                index += 1;//地址域和时间戳存在不确定性， 3
-                if (uploadOriginData.hasAddress && uploadOriginData.hasTimeStramp)//如果存在地址域
+                index += 1;
+                //地址域和时间戳存在不确定性， 3
+                //if (uploadOriginData.hasAddress && uploadOriginData.hasTimeStramp)//如果存在地址域
+                //{
+                //    uploadOriginData.addressDomain = GetHexBytes(messages, index, 8);
+                //    uploadOriginData.timeStamp = GetHexBytes(messages, (index += 8), 8);//11
+                //    index += 8;//19
+                //}
+                //else
+                //{
+                if (uploadOriginData.hasAddress)//如果存在地址域
                 {
                     uploadOriginData.addressDomain = GetHexBytes(messages, index, 8);
-                    uploadOriginData.timeStamp = GetHexBytes(messages, (index += 8), 8);//11
-                    index += 8;//19
+                    index += 8;
                 }
-                else
+                if (uploadOriginData.hasTimeStramp)//如果存在时间戳
                 {
-                    if (uploadOriginData.hasAddress)//如果存在地址域
-                    {
-                        uploadOriginData.addressDomain = GetHexBytes(messages, index, 8);
-                        index += 8;
-                    }
-                    if (uploadOriginData.hasTimeStramp)//如果存在时间戳
-                    {
-                        uploadOriginData.timeStamp = GetHexBytes(messages, index, 8);
-                        index += 8;
-                    }
+                    uploadOriginData.timeStamp = GetHexBytes(messages, index, 8);
+                    index += 8;
+                }
+                //}
+                //判断是否存在UUID
+                if (uploadOriginData.hasUUID)
+                {
+                    uploadOriginData.uuid = GetHexBytes(messages, index, 16);
+                    index += 16;
                 }
                 uploadOriginData.commandCode = messages[index];//19
                 uploadOriginData.messsageId = GetHexBytes(messages, (index += 1), 2); //19

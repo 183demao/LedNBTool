@@ -35,6 +35,10 @@ namespace NbIotCmd
         /// </summary>
         public byte[] timeStamp { get; set; }
         /// <summary>
+        /// UUID
+        /// </summary>
+        public byte[] uuid { get; set; }
+        /// <summary>
         /// 命令码
         /// </summary>
         public byte commandCode { get; set; }
@@ -66,6 +70,7 @@ namespace NbIotCmd
         public bool hasAddress { get; set; }
         //是否有时间戳
         public bool hasTimeStramp { get; set; }
+        public bool hasUUID { get; set; }
         public Dictionary<byte, UploadEntity> uploadEntitys { get; set; }
     }
     public class UploadEntity : IBaseMQTTEntity

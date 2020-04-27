@@ -1,8 +1,11 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Led.Tools;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using NbIotCmd.Context;
 using NbIotCmd.Entity;
 using NbIotCmd.Handler;
 using NbIotCmd.Helper;
+using NbIotCmd.IHandler;
 using NbIotCmd.IRepository;
 using NbIotCmd.NBEntity;
 using System;
@@ -11,18 +14,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NbIotCmd
+namespace NbIotCmd.Handler
 {
-    public class LightHandler : UploadHandler, NotifyHandler
+    public class LightHandler : IUploadHandler, INotifyHandler
     {
-        IBaseRepository<TNL_DeviceInfo, int> BaseRepo { get; set; }
+        IBaseRepository<TNL_DeviceInfo, int> DeviceRepository { get; set; }
         public LightHandler(IBaseRepository<TNL_DeviceInfo, int> baseRepo)
         {
-            BaseRepo = baseRepo;
+            DeviceRepository = baseRepo;
         }
-
-
-
         public async Task Run(UploadOriginData originData)
         {
             try
@@ -159,8 +159,9 @@ namespace NbIotCmd
                     deviceInfo.Group7 = long.Parse(string.Join(string.Empty, from d in upets[DeviceExp.Group7].MemeroyData
                                                                              select d.ToString("X2")));
                 }
+                using var DBContext = new EFContext();
                 //保存DeviceInfo信息
-                var entity = BaseRepo.FirstOrDefault(d => d.IMEI == deviceInfo.IMEI);
+                var entity = DBContext.TNL_DeviceInfos.FirstOrDefault(d => d.IMEI == deviceInfo.IMEI);
                 var NowDate = DateTime.Now;
                 if (entity != null)
                 {
@@ -184,7 +185,7 @@ namespace NbIotCmd
                     entity.IP = deviceInfo.IP;
                     entity.Server = deviceInfo.Server;
                     entity.Port = deviceInfo.Port;
-                    await BaseRepo.UpdateAsync(entity);
+                    DBContext.TNL_DeviceInfos.Update(entity);
                     if (entity.Group0 != deviceInfo.Group0
                      || entity.Group1 != deviceInfo.Group1
                      || entity.Group2 != deviceInfo.Group2
@@ -222,12 +223,12 @@ namespace NbIotCmd
                         var transmitData = new TransmitData
                         {
                             Topic = entity.IMEI,
-                            CommandCode = "0X14",
+                            CommandCode = DataHelper.BytesToHexStr(new byte[] { 0x14 }),
                             MesssageID = int.Parse(string.Join(string.Empty, from d in originData.messsageId select d.ToString())),
                             Data = TransmitHex,
                             UUID = guid
                         };
-                        TransmitContext.GetInstance().GetTransmitSchedule().Run(transmitData);
+                        await TransmitContext.GetInstance().GetTransmitSchedule().Run(transmitData);
                     }
                 }
                 else
@@ -236,9 +237,9 @@ namespace NbIotCmd
                     //deviceInfo.ID = Key;
                     deviceInfo.LocalDate = NowDate;
                     deviceInfo.SampTime = NowDate;
-                    await BaseRepo.InsertAsync(deviceInfo);
+                    await DBContext.TNL_DeviceInfos.AddAsync(deviceInfo);
                 }
-
+                await DBContext.SaveChangesAsync();
             }
             catch (Exception ex)
             { }

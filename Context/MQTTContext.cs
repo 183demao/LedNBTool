@@ -35,6 +35,9 @@ namespace NbIotCmd
         /// </summary>
         public async Task Initialize(string server, int port, WinformAsyncNotification notification)
         {
+            Console.WriteLine(managedMqttClient == null ? "是" : "否");
+            if (managedMqttClient != null && managedMqttClient.IsConnected) return;
+
             var mqttFactory = new MqttFactory();
 
             var tlsOptions = new MqttClientTlsOptions
@@ -64,7 +67,6 @@ namespace NbIotCmd
 
             options.CleanSession = true;
             options.KeepAlivePeriod = TimeSpan.FromSeconds(5);
-
             managedMqttClient = mqttFactory.CreateManagedMqttClient();
             managedMqttClient.ConnectedHandler = new MqttClientConnectedHandlerDelegate(OnSubscriberConnectedAsync);
             managedMqttClient.DisconnectedHandler = new MqttClientDisconnectedHandlerDelegate(OnSubscriberDisconnected);
@@ -76,7 +78,6 @@ namespace NbIotCmd
             });
             //注册通知接口
             this.notification = notification;
-
         }
 
         /// <summary>
@@ -177,7 +178,7 @@ namespace NbIotCmd
             {
                 uploadOrigin.uploadEntitys = new Dictionary<byte, UploadEntity>();
                 NBReceivedHelper.GetUploadEntity(uploadOrigin.uploadEntitys, uploadOrigin.data, 0);
-                UploadContext.GetInstance().GetUploadSchedule().Run(uploadOrigin);
+                await UploadContext.GetInstance().GetUploadSchedule().Run(uploadOrigin);
             }
         }
         /// <summary>
@@ -185,8 +186,9 @@ namespace NbIotCmd
         /// </summary>
         /// <param name="obj"></param>
         /// <returns></returns>
-        private async Task OnSubscriberDisconnected(MqttClientDisconnectedEventArgs obj)
+        private Task OnSubscriberDisconnected(MqttClientDisconnectedEventArgs obj)
         {
+            return Task.CompletedTask;
         }
 
         private async Task OnSubscriberConnectedAsync(MqttClientConnectedEventArgs obj)

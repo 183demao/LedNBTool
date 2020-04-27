@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NbIotCmd.Handler
+namespace NbIotCmd.IHandler
 {
-    public interface NotifyHandler
+    public interface INotifyHandler
     {
         /// <summary>
         /// 发送消息

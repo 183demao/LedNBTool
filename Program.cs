@@ -8,6 +8,7 @@ using NbIotCmd.Entity;
 using Microsoft.Extensions.DependencyInjection;
 using NbIotCmd.Helper;
 using NbIotCmd.Context;
+using NbIotCmd.Handler;
 
 namespace NbIotCmd
 {
@@ -26,6 +27,7 @@ namespace NbIotCmd
             IocManager.Services.AddSingleton<UploadSchedule>();
             IocManager.Services.AddTransient<LightHandler>();
             IocManager.Services.AddTransient<NbCommandHandler>();
+            IocManager.Services.AddTransient<NbCommandReplyHandler>();
             IocManager.Services.AddTransient<DataBaseService>();
           
             IocManager.Services.AddDbContext<EFContext>();

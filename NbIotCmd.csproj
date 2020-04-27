@@ -20,7 +20,7 @@
 
   <ItemGroup>
     <Reference Include="Led.Tools">
-      <HintPath>..\..\..\..\Public\Nwt\cache\recv\张苏伊\Led2.1223-3.1\Led2.1223-3.1\Led2\Led.Tools\bin\Debug\netstandard2.0\Led.Tools.dll</HintPath>
+      <HintPath>bin\Debug\netcoreapp3.1\Led.Tools.dll</HintPath>
     </Reference>
   </ItemGroup>
 

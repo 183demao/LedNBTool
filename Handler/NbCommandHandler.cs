@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore.Storage;
 using NbIotCmd.Entity;
 using NbIotCmd.Handler;
 using NbIotCmd.Helper;
+using NbIotCmd.IHandler;
 using NbIotCmd.IRepository;
 using NbIotCmd.NBEntity;
 using NbIotCmd.Service;
@@ -14,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace NbIotCmd
 {
-    public class NbCommandHandler : TransmitHandler, NotifyHandler
+    public class NbCommandHandler : ITransmitHandler, INotifyHandler
     {
         public NbCommandHandler(IBaseRepository<NbCommand, long> baseRepo)
         {
@@ -28,6 +29,7 @@ namespace NbIotCmd
         {
             try
             {
+                using var dbContext = new EFContext();
                 DateTime NowTime = DateTime.Now;
                 NbCommand nbCommand = new NbCommand
                 {
@@ -39,14 +41,14 @@ namespace NbIotCmd
                     Timestamp = NowTime,
                     Topic = transmitData.Topic,
                     TopicType = "INIT",
-                    Account="SYS"
+                    Account = "SYS"
                 };
-                await BaseRepo.InsertAsync(nbCommand);//先插入发送命令表中
-                                                      //开始发送
-                await MQTTContext.getInstance().Publish(new Dictionary<string, List<byte[]>>
-            {
-                {transmitData.Topic,new List<byte[]>{  transmitData.Data } }
-            });
+                await dbContext.NbCommands.AddAsync(nbCommand);//先插入发送命令表中
+                await dbContext.SaveChangesAsync();//保证数据库中存在值
+                await Send(new Dictionary<string, List<byte[]>>
+                    {
+                        {transmitData.Topic,new List<byte[]>{  transmitData.Data } }
+                    });
             }
             catch (Exception ex)
             {
