@@ -25,9 +25,11 @@ namespace NbIotCmd
             IocManager.Services.AddTransient(typeof(IBaseRepository<,>), typeof(BaseRepository<,>));
             IocManager.Services.AddSingleton<TransmitSchedule>();
             IocManager.Services.AddSingleton<UploadSchedule>();
+            IocManager.Services.AddTransient<DeviceHandler>();
             IocManager.Services.AddTransient<LightHandler>();
             IocManager.Services.AddTransient<NbCommandHandler>();
             IocManager.Services.AddTransient<NbCommandReplyHandler>();
+            IocManager.Services.AddTransient<AlarmHandler>();
             IocManager.Services.AddTransient<DataBaseService>();
           
             IocManager.Services.AddDbContext<EFContext>();

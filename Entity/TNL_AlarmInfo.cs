@@ -13,7 +13,7 @@ namespace NbIotCmd.Entity
         ///主键自增
         ///</summary>	                                        
         [Key]
-        public int ID { get; set; }
+        public long ID { get; set; }
         /// <summary>
         ///地址域
         ///</summary>	                                        
@@ -21,43 +21,43 @@ namespace NbIotCmd.Entity
         /// <summary>
         ///灯号
         ///</summary>	                                        
-        public long TunnelLight_ID { get; set; }
+        public long? TunnelLight_ID { get; set; }
         /// <summary>
         ///调光等级
         ///</summary>	                                        
-        public float DimmingFeatureValue_NR { get; set; }
+        public double DimmingFeatureValue_NR { get; set; }
         /// <summary>
         ///电压
         ///</summary>	                                        
-        public float VoltageFeatureValue_NR { get; set; }
+        public double VoltageFeatureValue_NR { get; set; }
         /// <summary>
         ///电流
         ///</summary>	                                        
-        public float CurrentFeatureValue_NR { get; set; }
+        public double CurrentFeatureValue_NR { get; set; }
         /// <summary>
         ///有功功率
         ///</summary>	                                        
-        public float PowerFeatureValue_NR { get; set; }
+        public double PowerFeatureValue_NR { get; set; }
         /// <summary>
         ///功率因素
         ///</summary>	                                        
-        public float PowerFactor { get; set; }
+        public double PowerFactor { get; set; }
         /// <summary>
         ///用电量
         ///</summary>	                                        
-        public float PowerConsumption_NR { get; set; }
+        public double PowerConsumption_NR { get; set; }
         /// <summary>
         ///工作时间
         ///</summary>	                                        
-        public float WorkingTimeInMinute_NR { get; set; }
+        public double WorkingTimeInMinute_NR { get; set; }
         /// <summary>
         ///内部温度
         ///</summary>	                                        
-        public float Temperature_NR { get; set; }
+        public double Temperature_NR { get; set; }
         /// <summary>
         ///光感值
         ///</summary>	                                        
-        public float LuminousIntensity_NR { get; set; }
+        public double LuminousIntensity_NR { get; set; }
         /// <summary>
         ///NB模块的CSQ
         ///</summary>	                                        
@@ -93,7 +93,7 @@ namespace NbIotCmd.Entity
         /// <summary>
         /// ///创建时间
         /// </summary>	                                        
-        public DateTime SimpleTime { get; set; }
+        public DateTime SampTime { get; set; }
 
     }
 }

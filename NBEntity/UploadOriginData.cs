@@ -72,6 +72,8 @@ namespace NbIotCmd
         public bool hasTimeStramp { get; set; }
         public bool hasUUID { get; set; }
         public Dictionary<byte, UploadEntity> uploadEntitys { get; set; }
+        //原始数据
+        public byte[] OriginData { get; set; }
     }
     public class UploadEntity : IBaseMQTTEntity
     {

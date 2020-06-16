@@ -1,264 +1,277 @@
 ﻿using Led.Tools;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using NbIotCmd.Context;
 using NbIotCmd.Entity;
-using NbIotCmd.Handler;
 using NbIotCmd.Helper;
 using NbIotCmd.IHandler;
-using NbIotCmd.IRepository;
 using NbIotCmd.NBEntity;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace NbIotCmd.Handler
 {
-    public class LightHandler : IUploadHandler, INotifyHandler
+    /// <summary>
+    /// 巡检数据
+    /// </summary>
+    public class LightHandler : IUploadHandler
     {
-        IBaseRepository<TNL_DeviceInfo, int> DeviceRepository { get; set; }
-        public LightHandler(IBaseRepository<TNL_DeviceInfo, int> baseRepo)
-        {
-            DeviceRepository = baseRepo;
-        }
+        [Obsolete]
         public async Task Run(UploadOriginData originData)
         {
+
+            if (!originData.uploadEntitys.ContainsKey(NBRAC.DimmingFeature)) return;
+
+            using var dbContext = new EFContext();
+            using var trans = await dbContext.Database.BeginTransactionAsync();
             try
             {
-                var upets = originData.uploadEntitys;
-                //关键判断是否存在IMEI号，如果存在，则认为是通电数据
-                if (!upets.ContainsKey(DeviceExp.IMEI)) return;
-                //只需要找我要的寄存器地址就行了
-                TNL_DeviceInfo deviceInfo = new TNL_DeviceInfo();
-                if (upets.ContainsKey(DeviceExp.DeviceType))//设备类型码
-                {
-                    deviceInfo.DeviceType = string.Join(string.Empty, from d in upets[DeviceExp.DeviceType].MemeroyData
-                                                                      select d.ToString());
-                }
-                if (upets.ContainsKey(DeviceExp.HDVersion))//硬件版本号
-                {
-                    deviceInfo.HDVersion = string.Join(string.Empty, from d in upets[DeviceExp.HDVersion].MemeroyData
-                                                                     select d.ToString());
-                }
-                if (upets.ContainsKey(DeviceExp.Version))//硬件版本号
-                {
-                    deviceInfo.Version = string.Join(string.Empty, from d in upets[DeviceExp.Version].MemeroyData
-                                                                   select d.ToString());
-                }
-                if (upets.ContainsKey(DeviceExp.GPSInfo))//硬件版本号
-                {
-                    deviceInfo.GPSInfo = string.Join(string.Empty, from d in upets[DeviceExp.GPSInfo].MemeroyData
-                                                                   select d.ToString("X2"));
-                }
-                if (upets.ContainsKey(DeviceExp.ReportInterval))//硬件版本号
-                {
-                    deviceInfo.ReportInterval = int.Parse(string.Join(string.Empty, from d in upets[DeviceExp.ReportInterval].MemeroyData
-                                                                                    select d.ToString("X2")));
-                }
-                if (upets.ContainsKey(DeviceExp.TAVersion))//硬件版本号
-                {
-                    deviceInfo.TAVersion = string.Join(string.Empty, from d in upets[DeviceExp.TAVersion].MemeroyData
-                                                                     select d.ToString("X2"));
-                }
-                if (upets.ContainsKey(DeviceExp.IMEI))//硬件版本号
-                {
-                    deviceInfo.IMEI = Encoding.ASCII.GetString(upets[DeviceExp.IMEI].MemeroyData);
-                }
-                if (upets.ContainsKey(DeviceExp.IMSI))//硬件版本号
-                {
-                    deviceInfo.IMSI = Encoding.ASCII.GetString(upets[DeviceExp.IMSI].MemeroyData);
-                }
-                if (upets.ContainsKey(DeviceExp.ICCID))//硬件版本号
-                {
-                    deviceInfo.ICCID = Encoding.ASCII.GetString(upets[DeviceExp.ICCID].MemeroyData);
-                }
-                if (upets.ContainsKey(DeviceExp.BAND))//硬件版本号
-                {
-                    deviceInfo.BAND = string.Join(string.Empty, from d in upets[DeviceExp.BAND].MemeroyData
-                                                                select d.ToString("X2"));
-                }
-                if (upets.ContainsKey(DeviceExp.CELLID))//硬件版本号
-                {
-                    deviceInfo.CELLID = string.Join(string.Empty, from d in upets[DeviceExp.CELLID].MemeroyData
-                                                                  select d.ToString("X2"));
-                }
-                if (upets.ContainsKey(DeviceExp.RSSI))//硬件版本号
-                {
-                    deviceInfo.RSSI = string.Join(string.Empty, from d in upets[DeviceExp.RSSI].MemeroyData
-                                                                select d.ToString("X2"));
-                }
-                if (upets.ContainsKey(DeviceExp.RSRP))//硬件版本号
-                {
-                    deviceInfo.RSRP = string.Join(string.Empty, from d in upets[DeviceExp.RSRP].MemeroyData
-                                                                select d.ToString("X2"));
-                }
-                if (upets.ContainsKey(DeviceExp.UTC))//硬件版本号
-                {
-                    deviceInfo.UTC = string.Join(string.Empty, from d in upets[DeviceExp.UTC].MemeroyData
-                                                               select d.ToString("X2"));
-                }
-                if (upets.ContainsKey(DeviceExp.APN))//硬件版本号
-                {
-                    deviceInfo.APN = string.Join(string.Empty, from d in upets[DeviceExp.APN].MemeroyData
-                                                               select d.ToString());
-                }
-                if (upets.ContainsKey(DeviceExp.IP))//硬件版本号
-                {
-                    deviceInfo.IP = string.Join(string.Empty, from d in upets[DeviceExp.IP].MemeroyData
-                                                              select d.ToString());
-                }
-                if (upets.ContainsKey(DeviceExp.Server))//硬件版本号
-                {
-                    deviceInfo.Server = string.Join(string.Empty, from d in upets[DeviceExp.Server].MemeroyData
-                                                                  select d.ToString());
-                }
-                if (upets.ContainsKey(DeviceExp.Port))//硬件版本号
-                {
-                    deviceInfo.Port = string.Join(string.Empty, from d in upets[DeviceExp.Port].MemeroyData
-                                                                select d.ToString());
-                }
-                if (upets.ContainsKey(DeviceExp.Group0))//硬件版本号
-                {
-                    deviceInfo.Group0 = long.Parse(string.Join(string.Empty, from d in upets[DeviceExp.Group0].MemeroyData
-                                                                             select d.ToString("X2")));
-                }
-                if (upets.ContainsKey(DeviceExp.Group1))//硬件版本号
-                {
-                    deviceInfo.Group1 = long.Parse(string.Join(string.Empty, from d in upets[DeviceExp.Group1].MemeroyData
-                                                                             select d.ToString("X2")));
-                }
-                if (upets.ContainsKey(DeviceExp.Group2))//硬件版本号
-                {
-                    deviceInfo.Group2 = long.Parse(string.Join(string.Empty, from d in upets[DeviceExp.Group2].MemeroyData
-                                                                             select d.ToString("X2")));
-                }
-                if (upets.ContainsKey(DeviceExp.Group3))//硬件版本号
-                {
-                    deviceInfo.Group3 = long.Parse(string.Join(string.Empty, from d in upets[DeviceExp.Group3].MemeroyData
-                                                                             select d.ToString("X2")));
-                }
-                if (upets.ContainsKey(DeviceExp.Group4))//硬件版本号
-                {
-                    deviceInfo.Group4 = long.Parse(string.Join(string.Empty, from d in upets[DeviceExp.Group4].MemeroyData
-                                                                             select d.ToString("X2")));
-                }
-                if (upets.ContainsKey(DeviceExp.Group5))//硬件版本号
-                {
-                    deviceInfo.Group5 = long.Parse(string.Join(string.Empty, from d in upets[DeviceExp.Group5].MemeroyData
-                                                                             select d.ToString("X2")));
-                }
-                if (upets.ContainsKey(DeviceExp.Group6))//硬件版本号
-                {
-                    deviceInfo.Group6 = long.Parse(string.Join(string.Empty, from d in upets[DeviceExp.Group6].MemeroyData
-                                                                             select d.ToString("X2")));
-                }
-                if (upets.ContainsKey(DeviceExp.Group7))//硬件版本号
-                {
-                    deviceInfo.Group7 = long.Parse(string.Join(string.Empty, from d in upets[DeviceExp.Group7].MemeroyData
-                                                                             select d.ToString("X2")));
-                }
-                using var DBContext = new EFContext();
-                //保存DeviceInfo信息
-                var entity = DBContext.TNL_DeviceInfos.FirstOrDefault(d => d.IMEI == deviceInfo.IMEI);
-                var NowDate = DateTime.Now;
-                if (entity != null)
-                {
-                    entity.LocalDate = NowDate;
-                    entity.SampTime = NowDate;
-                    entity.DeviceType = deviceInfo.DeviceType;
-                    entity.HDVersion = deviceInfo.HDVersion;
-                    entity.Version = deviceInfo.Version;
-                    entity.GPSInfo = deviceInfo.GPSInfo;
-                    entity.ReportInterval = deviceInfo.ReportInterval;
-                    entity.TAVersion = deviceInfo.TAVersion;
-                    entity.IMEI = deviceInfo.IMEI;
-                    entity.IMSI = deviceInfo.IMSI;
-                    entity.ICCID = deviceInfo.ICCID;
-                    entity.BAND = deviceInfo.BAND;
-                    entity.CELLID = deviceInfo.CELLID;
-                    entity.RSSI = deviceInfo.RSSI;
-                    entity.RSRP = deviceInfo.RSRP;
-                    entity.UTC = deviceInfo.UTC;
-                    entity.APN = deviceInfo.APN;
-                    entity.IP = deviceInfo.IP;
-                    entity.Server = deviceInfo.Server;
-                    entity.Port = deviceInfo.Port;
-                    DBContext.TNL_DeviceInfos.Update(entity);
-                    if (entity.Group0 != deviceInfo.Group0
-                     || entity.Group1 != deviceInfo.Group1
-                     || entity.Group2 != deviceInfo.Group2
-                     || entity.Group3 != deviceInfo.Group3
-                     || entity.Group4 != deviceInfo.Group4
-                     || entity.Group5 != deviceInfo.Group5
-                     || entity.Group6 != deviceInfo.Group6
-                     || entity.Group7 != deviceInfo.Group7)//如果分组信息不一样，那么则发送初始化信息过去
-                    {
-                        #region 组装数据
-                        //MoonsHelper
-                        var guid = Guid.NewGuid();
-                        guid.ToString().ToUpper();
-                        //string GUID = string.Join("", guid.ToByteArray().Select(d => d.ToString("X2")));
-                        var gval0 = TransmitHelper.GetGroupHex(entity.Group0);
-                        var gval1 = TransmitHelper.GetGroupHex(entity.Group1);
-                        var gval2 = TransmitHelper.GetGroupHex(entity.Group2);
-                        var gval3 = TransmitHelper.GetGroupHex(entity.Group3);
-                        var gval4 = TransmitHelper.GetGroupHex(entity.Group4);
-                        var gval5 = TransmitHelper.GetGroupHex(entity.Group5);
-                        var gval6 = TransmitHelper.GetGroupHex(entity.Group6);
-                        var gval7 = TransmitHelper.GetGroupHex(entity.Group7);
-                        List<byte> GroupBytes = new List<byte>();
-                        GroupBytes.AddRange(new byte[] { upets[DeviceExp.Group0].ChannelNumber, DeviceExp.Group0, (byte)gval0.Length }.Concat(gval0));
-                        GroupBytes.AddRange(new byte[] { upets[DeviceExp.Group1].ChannelNumber, DeviceExp.Group1, (byte)gval1.Length }.Concat(gval1));
-                        GroupBytes.AddRange(new byte[] { upets[DeviceExp.Group2].ChannelNumber, DeviceExp.Group2, (byte)gval2.Length }.Concat(gval2));
-                        GroupBytes.AddRange(new byte[] { upets[DeviceExp.Group3].ChannelNumber, DeviceExp.Group3, (byte)gval3.Length }.Concat(gval3));
-                        GroupBytes.AddRange(new byte[] { upets[DeviceExp.Group4].ChannelNumber, DeviceExp.Group4, (byte)gval4.Length }.Concat(gval4));
-                        GroupBytes.AddRange(new byte[] { upets[DeviceExp.Group5].ChannelNumber, DeviceExp.Group5, (byte)gval5.Length }.Concat(gval5));
-                        GroupBytes.AddRange(new byte[] { upets[DeviceExp.Group6].ChannelNumber, DeviceExp.Group6, (byte)gval6.Length }.Concat(gval6));
-                        GroupBytes.AddRange(new byte[] { upets[DeviceExp.Group7].ChannelNumber, DeviceExp.Group7, (byte)gval7.Length }.Concat(gval7));
-                        #endregion
+                var Now = DateTime.Now;
+                TNL_History_Summary summary = new TNL_History_Summary();
+                summary.Partition_ID = long.Parse(Now.ToString("yyyyMMddHHmmss"));
 
-                        var TransmitHex = TransmitHelper.SendNBComand(guid.ToByteArray(), GroupBytes.ToArray());
-                        var transmitData = new TransmitData
-                        {
-                            Topic = entity.IMEI,
-                            CommandCode = DataHelper.BytesToHexStr(new byte[] { 0x14 }),
-                            MesssageID = int.Parse(string.Join(string.Empty, from d in originData.messsageId select d.ToString())),
-                            Data = TransmitHex,
-                            UUID = guid
-                        };
-                        await TransmitContext.GetInstance().GetTransmitSchedule().Run(transmitData);
-                    }
+                var keyObj = await DataBaseHelper.GetKey("TNL_History_Summary", "History_ID");
+                if (keyObj != 0) summary.History_ID = keyObj;
+                else summary.History_ID = 1000001;
+
+                var DeviceAddress = string.Join("", from d in originData.addressDomain select d.ToString("X")).PadLeft(12, '0');
+                var DeviceInfo = await (from d in dbContext.TNL_DeviceInfos
+                                        where d.DeviceAddress == DeviceAddress
+                                        select d).AsNoTracking().FirstOrDefaultAsync();
+                var lightInfo = await (from d in dbContext.TNL_TunnelLights
+                                       where d.LightPhysicalAddress_TX == DeviceAddress
+                                       select d).AsNoTracking().FirstOrDefaultAsync();
+                //var lightInfo = await dbContext.TNL_TunnelLights
+                // .AsNoTracking()
+                // .FirstOrDefaultAsync(d => d.IMEI.Contains(DeviceAddress));
+                if (DeviceInfo == null)//如果没发现设备信息
+                {
+                    DeviceInfo = new TNL_DeviceInfo();
+                    DeviceInfo.DeviceAddress = DeviceAddress;
+                    DeviceInfo.LocalDate = Now;
+                    DeviceInfo.SampTime = Now;
+                    await dbContext.TNL_DeviceInfos.AddAsync(DeviceInfo);
+                }
+               
+                if (lightInfo == null)
+                {
+                    SqlParameter[] Param =
+                    {
+                        new SqlParameter("@P_GatewayPAddress", System.Data.SqlDbType.VarChar){ Value="1"},
+                        new SqlParameter("@P_LightPAddress", System.Data.SqlDbType.VarChar){ Value=DeviceAddress},
+                        new SqlParameter("@P_longitude", System.Data.SqlDbType.Float){ Value=0},
+                        new SqlParameter("@P_latitude", System.Data.SqlDbType.Float){ Value=0},
+                        new SqlParameter("@P_RecDateTime", System.Data.SqlDbType.DateTime){ Value=Now},
+                        new SqlParameter("@P_LightID", System.Data.SqlDbType.Int){ Value=0,Direction=ParameterDirection.Output},
+                        new SqlParameter("@P_Msg", System.Data.SqlDbType.VarChar){ Value=string.Empty,Direction=ParameterDirection.Output},
+                    };
+                    var result = await dbContext.Database.ExecuteSqlCommandAsync("GPS_InsertData @P_GatewayPAddress,@P_LightPAddress,@P_longitude,@P_latitude,@P_RecDateTime,@P_LightID OUTPUT,@P_Msg OUTPUT", Param);
+                    int lightid = Convert.ToInt32(Param[5].Value);
+                    lightInfo = await dbContext.TNL_TunnelLights.AsNoTracking().FirstOrDefaultAsync(d => d.TunnelLight_ID == lightid);
+                }
+
+
+                if (lightInfo != null) summary.TunnelLight_ID = lightInfo.TunnelLight_ID;
+                else summary.TunnelLight_ID = -9999;//没找到这个灯具
+                summary.SampTime_DT = Now;
+                //TNL_DeviceInfo DeviceInfo = new TNL_DeviceInfo();
+                //if (lightInfo != null)
+                //{
+                //    DeviceInfo = await dbContext.TNL_DeviceInfos
+                //                          .AsNoTracking()
+                //                          .FirstOrDefaultAsync(d => d.IMEI == lightInfo.IMEI);
+                //}
+
+
+                summary.AlmLevel_ID = 0;
+
+                #region 插入历史信息表
+                if (originData.uploadEntitys.ContainsKey(NBRAC.DimmingFeature))
+                {
+                    summary.DimmingFeatureValue_NR = int.Parse(string.Join(string.Empty,
+                         from d in originData.uploadEntitys[NBRAC.DimmingFeature].MemeroyData
+                         select d.ToString("X2")), NumberStyles.HexNumber);
+                }
+                if (originData.uploadEntitys.ContainsKey(NBRAC.VoltageFeature))
+                {
+                    summary.VoltageFeatureValue_NR = int.Parse(string.Join(string.Empty,
+                         from d in originData.uploadEntitys[NBRAC.VoltageFeature].MemeroyData
+                         select d.ToString("X2")), NumberStyles.HexNumber);
+                }
+                if (originData.uploadEntitys.ContainsKey(NBRAC.CurrentFeature))
+                {
+                    summary.CurrentFeatureValue_NR = int.Parse(string.Join(string.Empty,
+                         from d in originData.uploadEntitys[NBRAC.CurrentFeature].MemeroyData
+                         select d.ToString("X2")), NumberStyles.HexNumber);
+                }
+                if (originData.uploadEntitys.ContainsKey(NBRAC.PowerFeature))
+                {
+                    summary.PowerFeatureValue_NR = int.Parse(string.Join(string.Empty,
+                         from d in originData.uploadEntitys[NBRAC.PowerFeature].MemeroyData
+                         select d.ToString("X2")), NumberStyles.HexNumber);
+                }
+                if (originData.uploadEntitys.ContainsKey(NBRAC.PowerFactor))
+                {
+                    summary.PowerFactor_NR = int.Parse(string.Join(string.Empty,
+                         from d in originData.uploadEntitys[NBRAC.PowerFactor].MemeroyData
+                         select d.ToString("X2")), NumberStyles.HexNumber);
+                }
+                if (originData.uploadEntitys.ContainsKey(NBRAC.PowerConsumption))
+                {
+                    summary.PowerConsumption_NR = int.Parse(string.Join(string.Empty,
+                         from d in originData.uploadEntitys[NBRAC.PowerConsumption].MemeroyData
+                         select d.ToString("X2")), NumberStyles.HexNumber);
+                }
+                if (originData.uploadEntitys.ContainsKey(NBRAC.WorkingTimeInMinute))
+                {
+                    summary.WorkingTimeInMinute_NR = int.Parse(string.Join(string.Empty,
+                         from d in originData.uploadEntitys[NBRAC.WorkingTimeInMinute].MemeroyData
+                         select d.ToString("X2")), NumberStyles.HexNumber);
+                }
+                if (originData.uploadEntitys.ContainsKey(NBRAC.Temperature))
+                {
+                    summary.Temperature_NR = int.Parse(string.Join(string.Empty,
+                         from d in originData.uploadEntitys[NBRAC.Temperature].MemeroyData
+                         select d.ToString("X2")), NumberStyles.HexNumber);
+                }
+                if (originData.uploadEntitys.ContainsKey(NBRAC.LuminousIntensity))
+                {
+                    summary.LuminousIntensity_NR = int.Parse(string.Join(string.Empty,
+                         from d in originData.uploadEntitys[NBRAC.LuminousIntensity].MemeroyData
+                         select d.ToString("X2")), NumberStyles.HexNumber);
+                }
+                summary.VehicleFlow_NR = 0;
+                summary.VehicleSpeed_NR = 0;
+                summary.FirmwareVersion_NR = 0;
+                summary.ChannelNumber = originData.uploadEntitys[NBRAC.DimmingFeature].ChannelNumber;
+                summary.LocalDate = Now;
+                //summary.TimeZone_CD = new object();
+                //summary.LightningCount = new object();
+                //summary.IsDay = new object();
+                summary.DataSource = 0;
+                summary.Address = null;
+                //summary.Signal_NR = new object();
+                summary.FirmwareVersion_NR = int.Parse((DeviceInfo.Version ?? "0"));
+                summary.RemoteEndPoint = DeviceInfo.IP;
+                summary.Version = DeviceInfo.Version;
+                summary.IMEI = DeviceInfo.IMEI;
+                summary.IMSI = DeviceInfo.IMSI;
+                summary.ICCID = DeviceInfo.ICCID;
+                summary.bandNo = int.Parse(DeviceInfo.BAND ?? "0");
+                summary.GpsInfo = DeviceInfo.GPSInfo;
+                summary.State = 0;
+                summary.UploadData = DataHelper.BytesToHexStr(originData.OriginData);
+                //summary.CSQ = ;
+                await dbContext.AddAsync(summary);
+                #endregion
+
+                #region 插入当前状态表
+                var lightalm = await dbContext.TNL_TunnelLightAlms.FirstOrDefaultAsync(d => d.TunnelLight_ID == summary.TunnelLight_ID);
+                //lightalm.TunnelLight_ID = summary.TunnelLight_ID;
+                bool Added = lightalm != null ? false : true;
+                if (Added) lightalm = new TNL_TunnelLightAlm();
+                lightalm.TunnelLight_ID = lightInfo.TunnelLight_ID;
+                lightalm.AlmLevel_ID = summary.AlmLevel_ID;
+                lightalm.DimmingFeatureValue_NR = summary.DimmingFeatureValue_NR;
+                lightalm.CurrentFeatureValue_NR = summary.CurrentFeatureValue_NR;
+                lightalm.VoltageFeatureValue_NR = summary.VoltageFeatureValue_NR;
+                lightalm.PowerFeatureValue_NR = summary.PowerFeatureValue_NR;
+                lightalm.LuminousIntensity_NR = summary.LuminousIntensity_NR;
+                lightalm.Temperature_NR = summary.Temperature_NR;
+                lightalm.PowerConsumption_NR = summary.PowerConsumption_NR;
+                lightalm.WorkingTimeInMinute_NR = summary.WorkingTimeInMinute_NR;
+                lightalm.VehicleFlow_NR = summary.VehicleFlow_NR;
+                lightalm.VehicleSpeed_NR = summary.VehicleSpeed_NR;
+                lightalm.FirmwareVersion_NR = summary.FirmwareVersion_NR;
+                lightalm.SampTime_DT = summary.SampTime_DT;
+                lightalm.PowerFactor_NR = summary.PowerFactor_NR;
+                lightalm.ChannelNumber = summary.ChannelNumber;
+                lightalm.LocalDate = summary.LocalDate;
+                lightalm.DataSource = summary.DataSource;
+                lightalm.RemoteEndPoint = summary.RemoteEndPoint;
+                lightalm.Signal_NR = summary.Signal_NR;
+                lightalm.Version = summary.Version;
+                //lightalm.IMEI = summary.IMEI;
+                //lightalm.IMSI = summary.IMSI;
+                //lightalm.ICCID = summary.ICCID;
+                lightalm.bandNo = summary.bandNo;
+                lightalm.State = summary.State;
+                lightalm.GpsInfo = summary.GpsInfo;
+                //lightalm.TimePlan = summary.time;
+                //lightalm.PhotoCell = summary.poho;
+                //lightalm.InspectSuccess_DT = summary.insp;
+                lightalm.IsDay = summary.IsDay;
+                lightalm.LightningCount = summary.LightningCount;
+                //lightalm.upUID = summary.upk;
+                lightalm.CSQ = summary.CSQ;
+                if (Added)
+                {
+                    dbContext.Add(lightalm);
                 }
                 else
                 {
-                    //long Key = DataBaseHelper.GetKey("TNL_DeviceInfo", "DeviceInfo_ID");
-                    //deviceInfo.ID = Key;
-                    deviceInfo.LocalDate = NowDate;
-                    deviceInfo.SampTime = NowDate;
-                    await DBContext.TNL_DeviceInfos.AddAsync(deviceInfo);
+                    dbContext.Update(lightalm);
                 }
-                await DBContext.SaveChangesAsync();
+                #endregion
+
+
+                #region 插入告警数据
+                if (originData.uploadEntitys.ContainsKey(NBRAC.AlarmInfo))
+                {
+
+                    TNL_AlarmInfo alarmInfo = new TNL_AlarmInfo();
+                    alarmInfo.DeviceAddress = DeviceAddress;
+                    alarmInfo.TunnelLight_ID = lightInfo.TunnelLight_ID;
+                    alarmInfo.DimmingFeatureValue_NR = summary.DimmingFeatureValue_NR;
+                    alarmInfo.VoltageFeatureValue_NR = summary.VoltageFeatureValue_NR;
+                    alarmInfo.CurrentFeatureValue_NR = summary.CurrentFeatureValue_NR;
+                    alarmInfo.PowerFeatureValue_NR = summary.PowerFeatureValue_NR;
+                    alarmInfo.PowerFactor = summary.PowerFactor_NR;
+                    alarmInfo.PowerConsumption_NR = summary.PowerConsumption_NR;
+                    alarmInfo.WorkingTimeInMinute_NR = summary.WorkingTimeInMinute_NR;
+                    alarmInfo.Temperature_NR = summary.Temperature_NR;
+                    alarmInfo.WorkingTimeInMinute_NR = summary.WorkingTimeInMinute_NR;
+                    alarmInfo.LuminousIntensity_NR = summary.LuminousIntensity_NR;
+                    if (originData.uploadEntitys.ContainsKey(NBRAC.AlarmInfo))
+                        alarmInfo.AlarmInfo = string.Join(string.Empty,
+                                 from d in originData.uploadEntitys[NBRAC.AlarmInfo].MemeroyData
+                                 select d);
+                    if (originData.uploadEntitys.ContainsKey(NBRAC.Alarm0))
+                        alarmInfo.Alarm0 = int.Parse(string.Join(string.Empty,
+                                 from d in originData.uploadEntitys[NBRAC.Alarm0].MemeroyData
+                                 select d.ToString()));
+                    if (originData.uploadEntitys.ContainsKey(NBRAC.Alarm1))
+                        alarmInfo.Alarm1 = int.Parse(string.Join(string.Empty,
+                                 from d in originData.uploadEntitys[NBRAC.Alarm1].MemeroyData
+                                 select d.ToString()));
+                    if (originData.uploadEntitys.ContainsKey(NBRAC.Alarm2))
+                        alarmInfo.Alarm2 = int.Parse(string.Join(string.Empty,
+                                 from d in originData.uploadEntitys[NBRAC.Alarm2].MemeroyData
+                                 select d.ToString()));
+                    if (originData.uploadEntitys.ContainsKey(NBRAC.Alarm3))
+                        alarmInfo.Alarm3 = int.Parse(string.Join(string.Empty,
+                                 from d in originData.uploadEntitys[NBRAC.Alarm3].MemeroyData
+                                 select d.ToString()));
+                    if (originData.uploadEntitys.ContainsKey(NBRAC.Alarm4))
+                        alarmInfo.Alarm4 = int.Parse(string.Join(string.Empty,
+                                 from d in originData.uploadEntitys[NBRAC.Alarm4].MemeroyData
+                                 select d.ToString()));
+                    alarmInfo.LocalDate = Now;
+                    alarmInfo.SampTime = Now;
+                    await dbContext.AddAsync(alarmInfo);
+                }
+                #endregion
+                await dbContext.SaveChangesAsync();
+                await trans.CommitAsync();
             }
             catch (Exception ex)
-            { }
-
-        }
-        /// <summary>
-        /// 通知
-        /// </summary>
-        /// <param name="publishData"></param>
-        /// <returns></returns>
-
-        public async Task Send(Dictionary<string, List<byte[]>> publishData)
-        {
-            try
             {
-                await MQTTContext.getInstance().Publish(publishData);
-            }
-            catch (Exception)
-            {
+                await trans.RollbackAsync();
+                throw;
             }
         }
     }

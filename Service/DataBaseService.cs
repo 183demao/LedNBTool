@@ -5,6 +5,8 @@ using System.Linq;
 using NbIotCmd.IRepository;
 using NbIotCmd.Entity;
 using NbIotCmd.Repository;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace NbIotCmd
 {
@@ -19,16 +21,19 @@ namespace NbIotCmd
             this._baseRepository = baseRepository;
         }
 
-        public long GetDataKey(string sourceid, string keyname)
+        public async Task<long> GetDataKeyAsync(string sourceid, string keyname)
         {
+            using var dbContext = new EFContext();
+            using var trans = await dbContext.Database.BeginTransactionAsync();
             try
             {
-
-                var resobj = _baseRepository.FirstOrDefault(k => k.SOURCE_CD == sourceid && k.KEYNAME == keyname);
+                var resobj = dbContext.BS_BigObjectKeys
+                    .AsNoTracking()
+                    .FirstOrDefault(k => k.SOURCE_CD == sourceid && k.KEYNAME == keyname);
                 if (resobj != null)
                 {
                     resobj.KEYVALUE += 1;
-                    _baseRepository.Update(resobj);
+                    dbContext.Update(resobj);
                 }
                 else
                 {
@@ -37,13 +42,15 @@ namespace NbIotCmd
                     resobj.KEYNAME = keyname;
                     resobj.KEYVALUE = 1000001;
                     resobj.LOCKTIME_TM = DateTime.Now;
-                    _baseRepository.Insert(resobj);
+                    dbContext.Add(resobj);
                 }
+                await dbContext.SaveChangesAsync();
+                await trans.CommitAsync();
                 return resobj.KEYVALUE;
-
             }
-            catch (Exception)
+            catch
             {
+                await trans.RollbackAsync();
                 throw;
             }
         }

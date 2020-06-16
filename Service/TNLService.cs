@@ -24,7 +24,7 @@ namespace NbIotCmd.Service
                     if (light == null)
                     {
                         light = new TNL_TunnelLight();
-                        light.TunnelLight_ID = DataBaseHelper.GetKey("TNL_TunnelLight", "TunnelLight_ID");
+                        light.TunnelLight_ID = await DataBaseHelper.GetKey("TNL_TunnelLight", "TunnelLight_ID");
                     }
                     light.TunnelLight_ID = -1;
                     light.TunnelSection_ID = -1;

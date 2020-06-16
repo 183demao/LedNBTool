@@ -29,6 +29,6 @@ namespace NbIotCmd.Entity
         /// <summary>创建时间</summary>	                                        
         public DateTime SimpleTime { get; set; }
         /// <summary>灯号</summary>	                                          	
-        public long TunnelLight_ID { get; set; }
+        public long? TunnelLight_ID { get; set; }
     }
 }

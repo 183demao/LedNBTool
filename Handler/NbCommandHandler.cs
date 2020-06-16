@@ -15,6 +15,9 @@ using System.Threading.Tasks;
 
 namespace NbIotCmd
 {
+    /// <summary>
+    /// 设备命令
+    /// </summary>
     public class NbCommandHandler : ITransmitHandler, INotifyHandler
     {
         public NbCommandHandler(IBaseRepository<NbCommand, long> baseRepo)

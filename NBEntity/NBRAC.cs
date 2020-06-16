@@ -4,7 +4,10 @@ using System.Text;
 
 namespace NbIotCmd.NBEntity
 {
-    public class DeviceExp
+    /// <summary>
+    /// NB类寄存器地址
+    /// </summary>
+    public class NBRAC
     {
         /// <summary>
         /// 设备类型码
@@ -110,5 +113,72 @@ namespace NbIotCmd.NBEntity
         /// 单灯所属群组
         /// </summary>
         public static readonly byte Group7 = 0x35;
+
+        #region 调光类
+        /// <summary>
+        ///调光等级
+        ///</summary>	
+        public static readonly byte DimmingFeature = 0x0D;
+        /// <summary>
+        ///电压
+        ///</summary>	       
+        public static readonly byte VoltageFeature = 0x0F;
+        /// <summary>
+        ///电流
+        ///</summary>	    
+        public static readonly byte CurrentFeature = 0x0E;
+        /// <summary>
+        ///有功功率
+        ///</summary>	 
+        public static readonly byte PowerFeature = 0x0D;
+        /// <summary>
+        /// 功率因素
+        /// </summary>
+        public static readonly byte PowerFactor = 0x1E;
+        /// <summary>
+        ///用电量
+        ///</summary>	  
+        public static readonly byte PowerConsumption = 0x13;
+        /// <summary>
+        ///工作时间
+        ///</summary>	 
+        public static readonly byte WorkingTimeInMinute = 0x12;
+        /// <summary>
+        ///内部温度
+        ///</summary>	  
+        public static readonly byte Temperature = 0x1B;
+        /// <summary>
+        ///光感值
+        ///</summary>	   
+        public static readonly byte LuminousIntensity = 0x15;
+        #endregion
+
+        #region 警报类型
+        /// <summary>
+        /// 报警信息
+        /// </summary>
+        public static readonly byte AlarmInfo = 0x28;
+        /// <summary>
+        /// 过流告警
+        /// </summary>
+        public static readonly byte Alarm0 = 0x29;
+        /// <summary>
+        /// 过功率告警
+        /// </summary>
+        public static readonly byte Alarm1 = 0x2A;
+        /// <summary>
+        /// 电容告警
+        /// </summary>
+        public static readonly byte Alarm2 = 0x2B;
+        /// <summary>
+        /// 光源故障告警
+        /// </summary>
+        public static readonly byte Alarm3 = 0x2C;
+        /// <summary>
+        /// 熔丝故障(掉电)告警
+        /// </summary>
+        public static readonly byte Alarm4 = 0x2D;
+
+        #endregion
     }
 }

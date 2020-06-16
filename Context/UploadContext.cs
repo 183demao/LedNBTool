@@ -28,11 +28,15 @@ namespace NbIotCmd.Context
             try
             {
                 uploadSchedule = IocManager.ServiceProvider.GetService<UploadSchedule>();
+                var deviceHandler = IocManager.ServiceProvider.GetService<DeviceHandler>();
                 var lightHandler = IocManager.ServiceProvider.GetService<LightHandler>();
+                //var AlarmHandler = IocManager.ServiceProvider.GetService<AlarmHandler>();
                 var nbCommandReplyHandler = IocManager.ServiceProvider.GetService<NbCommandReplyHandler>();
                 //uploadSchedule.AddHandler<LightHandler>();
+                uploadSchedule.mqttHandler.Add(deviceHandler);
                 uploadSchedule.mqttHandler.Add(lightHandler);
                 uploadSchedule.mqttHandler.Add(nbCommandReplyHandler);
+                //uploadSchedule.mqttHandler.Add(AlarmHandler);
             }
             catch (Exception e)
             {

@@ -20,8 +20,8 @@ namespace NbIotCmd.Helper
             result.Add(0x00);
             result.Add(0x01);
             result.Add(0x00);
-            var length = (DATA.Length + 16 + 8 + 3);
-            if (length > 255) result.AddRange(new byte[] { 0xFF, (byte)(length - 255) });//Length
+            var length = (DATA.Length);
+            if (length > 255) result.AddRange(new byte[] { (byte)(length - 255), 0x00 });//Length
             else result.AddRange(new byte[] { 0x00, (byte)length });
             result.AddRange(DATA);//Length
             var CRC = DataHelper.GetCRC16_2Bytes(result.ToArray());
@@ -37,13 +37,10 @@ namespace NbIotCmd.Helper
                 string HexStr = Convert.ToString(val, 16);
                 HexStr = HexStr.Length % 2 != 0 ? "0" + HexStr : HexStr;
                 HexStr = Regex.Replace(HexStr, @"(\d{2})", "$1 ");
-                res = HexStr.Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(D =>
-                 Convert.ToByte(D)
-                ).ToList();
+                res = HexStr.Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                .Select(D => Convert.ToByte(D, 16)).ToList();
             }
-            catch (Exception ex)
-            {
-            }
+            catch { throw; }
             return res.ToArray();
         }
     }

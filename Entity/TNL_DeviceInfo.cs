@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -73,6 +74,14 @@ namespace NbIotCmd.Entity
         public long Group6 { get; set; }
         /// <summary>单灯所属群组</summary>	                     
         public long Group7 { get; set; }
+        /// <summary>
+        /// 地址域
+        /// </summary>
+        public string DeviceAddress { get; set; }
 
+        public static implicit operator TNL_DeviceInfo(EntityEntry<TNL_DeviceInfo> v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using NbIotCmd.NBEntity;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace NbIotCmd.Helper
@@ -43,7 +44,9 @@ namespace NbIotCmd.Helper
             UploadOriginData uploadOriginData = new UploadOriginData();
             try
             {
+
                 var index = 0;
+                uploadOriginData.OriginData = messages;
                 //组装类
                 uploadOriginData.frameHeader = messages[index];//0
                 uploadOriginData.frameType = messages[index += 1];//1
@@ -107,6 +110,7 @@ namespace NbIotCmd.Helper
                 uploadData.MemeroyID = originData[index + 1];
                 uploadData.MemeroyLength = originData[index + 2];
                 uploadData.MemeroyData = GetHexBytes(originData, index + 3, uploadData.MemeroyLength);
+                //uploadData.MemeroyData = uploadData.MemeroyData.Reverse().ToArray();
                 if (!result.ContainsKey(uploadData.MemeroyID)) result.Add(uploadData.MemeroyID, uploadData);
                 index = index + 3 + uploadData.MemeroyLength;
                 if (index > originData.Length - 1) return;

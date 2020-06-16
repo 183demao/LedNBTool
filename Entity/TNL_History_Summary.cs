@@ -21,47 +21,47 @@ namespace NbIotCmd.Entity
         /// <summary>
         /// 单灯ID
         /// </summary>
-        public long TunnelLight_ID { get; set; }
+        public long? TunnelLight_ID { get; set; }
         /// <summary>
         /// 电流
         /// </summary>
-        public float CurrentFeatureValue_NR { get; set; }
+        public double CurrentFeatureValue_NR { get; set; }
         /// <summary>
         /// 电压
         /// </summary>
-        public float VoltageFeatureValue_NR { get; set; }
+        public double VoltageFeatureValue_NR { get; set; }
         /// <summary>
         /// 调光等级
         /// </summary>
-        public float DimmingFeatureValue_NR { get; set; }
+        public double DimmingFeatureValue_NR { get; set; }
         /// <summary>
         /// 有功功率
         /// </summary>
-        public float PowerFeatureValue_NR { get; set; }
+        public double PowerFeatureValue_NR { get; set; }
         /// <summary>
         /// 光感值
         /// </summary>
-        public float LuminousIntensity_NR { get; set; }
+        public double LuminousIntensity_NR { get; set; }
         /// <summary>
         /// 内部温度
         /// </summary>
-        public float Temperature_NR { get; set; }
+        public double Temperature_NR { get; set; }
         /// <summary>
         /// 用电量
         /// </summary>
-        public float PowerConsumption_NR { get; set; }
+        public double PowerConsumption_NR { get; set; }
         /// <summary>
         /// 累计工作时间
         /// </summary>
-        public float WorkingTimeInMinute_NR { get; set; }
+        public double WorkingTimeInMinute_NR { get; set; }
         /// <summary>
         /// 风向
         /// </summary>
-        public float VehicleFlow_NR { get; set; }
+        public double VehicleFlow_NR { get; set; }
         /// <summary>
         /// 风速
         /// </summary>
-        public float VehicleSpeed_NR { get; set; }
+        public double VehicleSpeed_NR { get; set; }
         /// <summary>
         /// 固件版本
         /// </summary>
@@ -77,7 +77,7 @@ namespace NbIotCmd.Entity
         /// <summary>
         /// 功率因素
         /// </summary>
-        public float PowerFactor_NR { get; set; }
+        public double PowerFactor_NR { get; set; }
         /// <summary>
         /// 通道号
         /// </summary>

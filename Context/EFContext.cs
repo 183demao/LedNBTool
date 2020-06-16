@@ -50,6 +50,8 @@ namespace NbIotCmd
         public DbSet<TNL_TunnelLight> TNL_TunnelLights { get; set; }
         public DbSet<BS_BIGOBJECTKEY> BS_BigObjectKeys { get; set; }
 
+
+        
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             var configurationBuilder = new ConfigurationBuilder()

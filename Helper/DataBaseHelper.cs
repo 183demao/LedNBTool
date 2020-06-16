@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace NbIotCmd.Helper
 {
@@ -15,9 +16,9 @@ namespace NbIotCmd.Helper
         {
             dbservice = IocManager.ServiceProvider.GetService<DataBaseService>();
         }
-        public static long GetKey(string sourceid, string keyname)
+        public static async Task<long> GetKey(string sourceid, string keyname)
         {
-            return dbservice.GetDataKey(sourceid, keyname);
+            return await dbservice.GetDataKeyAsync(sourceid, keyname);
         }
     }
 }
