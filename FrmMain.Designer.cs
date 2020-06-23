@@ -77,7 +77,6 @@
             // 
             this.txtServer.Location = new System.Drawing.Point(113, 24);
             this.txtServer.Name = "txtServer";
-            this.txtServer.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txtServer.Size = new System.Drawing.Size(125, 27);
             this.txtServer.TabIndex = 3;
             this.txtServer.Text = "119.3.68.47";

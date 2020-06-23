@@ -43,8 +43,8 @@ namespace NbIotCmd
                     EventTime = NowTime,
                     Timestamp = NowTime,
                     Topic = transmitData.Topic,
-                    TopicType = "INIT",
-                    Account = "SYS"
+                    TopicType = "light",
+                    Account = "System"
                 };
                 await dbContext.NbCommands.AddAsync(nbCommand);//先插入发送命令表中
                 await dbContext.SaveChangesAsync();//保证数据库中存在值

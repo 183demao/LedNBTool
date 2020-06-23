@@ -2,6 +2,7 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using NbIotCmd.Config;
 using NbIotCmd.Context;
 using NbIotCmd.Entity;
 using NbIotCmd.Handler;
@@ -248,7 +249,7 @@ namespace NbIotCmd.Handler
                         var TransmitHex = TransmitHelper.SendNBComand(guid.ToByteArray(), GroupBytes.ToArray());
                         transmitData = new TransmitData
                         {
-                            Topic = deviceInfo.IMEI,
+                            Topic = AppSetting.LightTopicBefore + deviceInfo.IMEI,
                             CommandCode = DataHelper.BytesToHexStr(new byte[] { 0x14 }),
                             MesssageID = int.Parse(string.Join(string.Empty, from d in originData.messsageId select d.ToString())),
                             Data = TransmitHex,

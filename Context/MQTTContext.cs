@@ -61,7 +61,7 @@ namespace NbIotCmd
                 },
                 Credentials = new MqttClientCredentials
                 {
-                    Username = "nbClient",
+                    Username = "NbUploadAnalytic",
                     Password = Encoding.UTF8.GetBytes("123"),
                 },
             };
