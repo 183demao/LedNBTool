@@ -18,7 +18,7 @@ namespace NbIotCmd
     /// <summary>
     /// 设备命令
     /// </summary>
-    public class NbCommandHandler : ITransmitHandler, INotifyHandler
+    public class NbCommandHandler : ITransmitHandler, IMQTTClientHandler
     {
         public NbCommandHandler(IBaseRepository<NbCommand, long> baseRepo)
         {
@@ -36,7 +36,7 @@ namespace NbIotCmd
                 DateTime NowTime = DateTime.Now;
                 NbCommand nbCommand = new NbCommand
                 {
-                    CmdCode = "0x14",
+                    CmdCode = "0x04",
                     MessageID = transmitData.MesssageID,
                     CmdData = DataHelper.BytesToHexStr(transmitData.Data),
                     CmdId = transmitData.UUID.ToString().ToUpper(),
@@ -48,10 +48,7 @@ namespace NbIotCmd
                 };
                 await dbContext.NbCommands.AddAsync(nbCommand);//先插入发送命令表中
                 await dbContext.SaveChangesAsync();//保证数据库中存在值
-                await Send(new Dictionary<string, List<byte[]>>
-                    {
-                        {transmitData.Topic,new List<byte[]>{  transmitData.Data } }
-                    });
+                await Send(transmitData.Topic, nbCommand.CmdData);
             }
             catch (Exception ex)
             {
@@ -69,6 +66,17 @@ namespace NbIotCmd
             try
             {
                 await MQTTContext.getInstance().Publish(publishData);
+            }
+            catch (Exception)
+            {
+            }
+        }
+
+        public async Task Send(string topic, string payload)
+        {
+            try
+            {
+                await MQTTContext.getInstance().Publish(topic, payload);
             }
             catch (Exception)
             {

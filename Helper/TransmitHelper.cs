@@ -16,7 +16,7 @@ namespace NbIotCmd.Helper
             result.Add(0x9A);
             result.Add(0x13);
             result.AddRange(GUID);//GUID
-            result.Add(0x14);
+            result.Add(0x04);
             result.Add(0x00);
             result.Add(0x01);
             result.Add(0x00);

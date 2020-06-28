@@ -24,7 +24,7 @@ namespace NbIotCmd.Handler
     /// <summary>
     /// 设备信息
     /// </summary>
-    public class DeviceHandler : IUploadHandler, INotifyHandler
+    public class DeviceHandler : IUploadHandler, IMQTTClientHandler
     {
         IBaseRepository<TNL_DeviceInfo, int> DeviceRepository { get; set; }
         public DeviceHandler(IBaseRepository<TNL_DeviceInfo, int> baseRepo)
@@ -236,21 +236,21 @@ namespace NbIotCmd.Handler
                         var gval6 = TransmitHelper.GetGroupHex(deviceInfo.Group6);
                         var gval7 = TransmitHelper.GetGroupHex(deviceInfo.Group7);
                         List<byte> GroupBytes = new List<byte>();
-                        GroupBytes.AddRange(new byte[] { upets[NBRAC.Group0].ChannelNumber, NBRAC.Group0, (byte)gval0.Length }.Concat(gval0));
-                        GroupBytes.AddRange(new byte[] { upets[NBRAC.Group1].ChannelNumber, NBRAC.Group1, (byte)gval1.Length }.Concat(gval1));
-                        GroupBytes.AddRange(new byte[] { upets[NBRAC.Group2].ChannelNumber, NBRAC.Group2, (byte)gval2.Length }.Concat(gval2));
-                        GroupBytes.AddRange(new byte[] { upets[NBRAC.Group3].ChannelNumber, NBRAC.Group3, (byte)gval3.Length }.Concat(gval3));
-                        GroupBytes.AddRange(new byte[] { upets[NBRAC.Group4].ChannelNumber, NBRAC.Group4, (byte)gval4.Length }.Concat(gval4));
-                        GroupBytes.AddRange(new byte[] { upets[NBRAC.Group5].ChannelNumber, NBRAC.Group5, (byte)gval5.Length }.Concat(gval5));
-                        GroupBytes.AddRange(new byte[] { upets[NBRAC.Group6].ChannelNumber, NBRAC.Group6, (byte)gval6.Length }.Concat(gval6));
-                        GroupBytes.AddRange(new byte[] { upets[NBRAC.Group7].ChannelNumber, NBRAC.Group7, (byte)gval7.Length }.Concat(gval7));
+                        GroupBytes.AddRange(new byte[] { NBRAC.Group0, upets[NBRAC.Group0].ChannelNumber, (byte)gval0.Length }.Concat(gval0));
+                        GroupBytes.AddRange(new byte[] { NBRAC.Group1, upets[NBRAC.Group1].ChannelNumber, (byte)gval1.Length }.Concat(gval1));
+                        GroupBytes.AddRange(new byte[] { NBRAC.Group2, upets[NBRAC.Group2].ChannelNumber, (byte)gval2.Length }.Concat(gval2));
+                        GroupBytes.AddRange(new byte[] { NBRAC.Group3, upets[NBRAC.Group3].ChannelNumber, (byte)gval3.Length }.Concat(gval3));
+                        GroupBytes.AddRange(new byte[] { NBRAC.Group4, upets[NBRAC.Group4].ChannelNumber, (byte)gval4.Length }.Concat(gval4));
+                        GroupBytes.AddRange(new byte[] { NBRAC.Group5, upets[NBRAC.Group5].ChannelNumber, (byte)gval5.Length }.Concat(gval5));
+                        GroupBytes.AddRange(new byte[] { NBRAC.Group6, upets[NBRAC.Group6].ChannelNumber, (byte)gval6.Length }.Concat(gval6));
+                        GroupBytes.AddRange(new byte[] { NBRAC.Group7, upets[NBRAC.Group7].ChannelNumber, (byte)gval7.Length }.Concat(gval7));
                         #endregion
 
                         var TransmitHex = TransmitHelper.SendNBComand(guid.ToByteArray(), GroupBytes.ToArray());
                         transmitData = new TransmitData
                         {
                             Topic = AppSetting.LightTopicBefore + deviceInfo.IMEI,
-                            CommandCode = DataHelper.BytesToHexStr(new byte[] { 0x14 }),
+                            CommandCode = DataHelper.BytesToHexStr(new byte[] { 0x04 }),
                             MesssageID = int.Parse(string.Join(string.Empty, from d in originData.messsageId select d.ToString())),
                             Data = TransmitHex,
                             UUID = guid
@@ -582,6 +582,17 @@ namespace NbIotCmd.Handler
             try
             {
                 await MQTTContext.getInstance().Publish(publishData);
+            }
+            catch (Exception)
+            {
+            }
+        }
+
+        public async Task Send(string topic, string payload)
+        {
+            try
+            {
+                await MQTTContext.getInstance().Publish(topic, payload);
             }
             catch (Exception)
             {

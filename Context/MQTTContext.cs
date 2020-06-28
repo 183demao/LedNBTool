@@ -116,6 +116,15 @@ namespace NbIotCmd
                          };
             await managedMqttClient.PublishAsync(values);
         }
+        /// <summary>
+        /// 发布
+        /// </summary>
+        /// <param name="publishData"></param>
+        /// <returns></returns>
+        public async Task Publish(string topic, string payload)
+        {
+            await managedMqttClient.PublishAsync(topic, payload);
+        }
 
         /// <summary>
         /// 接收消息
