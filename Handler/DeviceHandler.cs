@@ -144,43 +144,43 @@ namespace NbIotCmd.Handler
                 }
                 if (upets.ContainsKey(NBRAC.Group0))//Group0
                 {
-                    OrigindeviceInfo.Group0 = long.Parse(string.Join(string.Empty, from d in upets[NBRAC.Group0].MemeroyData
-                                                                                   select d.ToString("X2")));
+                    OrigindeviceInfo.Group0 = int.Parse(string.Join(string.Empty, from d in upets[NBRAC.Group0].MemeroyData
+                                                                                   select d.ToString("X2")),NumberStyles.HexNumber);
                 }
                 if (upets.ContainsKey(NBRAC.Group1))//Group1
                 {
-                    OrigindeviceInfo.Group1 = long.Parse(string.Join(string.Empty, from d in upets[NBRAC.Group1].MemeroyData
-                                                                                   select d.ToString("X2")));
+                    OrigindeviceInfo.Group1 = int.Parse(string.Join(string.Empty, from d in upets[NBRAC.Group1].MemeroyData
+                                                                                   select d.ToString("X2")), NumberStyles.HexNumber);
                 }
                 if (upets.ContainsKey(NBRAC.Group2))//Group2
                 {
-                    OrigindeviceInfo.Group2 = long.Parse(string.Join(string.Empty, from d in upets[NBRAC.Group2].MemeroyData
-                                                                                   select d.ToString("X2")));
+                    OrigindeviceInfo.Group2 = int.Parse(string.Join(string.Empty, from d in upets[NBRAC.Group2].MemeroyData
+                                                                                   select d.ToString("X2")), NumberStyles.HexNumber);
                 }
                 if (upets.ContainsKey(NBRAC.Group3))//Group3
                 {
-                    OrigindeviceInfo.Group3 = long.Parse(string.Join(string.Empty, from d in upets[NBRAC.Group3].MemeroyData
-                                                                                   select d.ToString("X2")));
+                    OrigindeviceInfo.Group3 = int.Parse(string.Join(string.Empty, from d in upets[NBRAC.Group3].MemeroyData
+                                                                                   select d.ToString("X2")), NumberStyles.HexNumber);
                 }
                 if (upets.ContainsKey(NBRAC.Group4))//Group4
                 {
-                    OrigindeviceInfo.Group4 = long.Parse(string.Join(string.Empty, from d in upets[NBRAC.Group4].MemeroyData
-                                                                                   select d.ToString("X2")));
+                    OrigindeviceInfo.Group4 = int.Parse(string.Join(string.Empty, from d in upets[NBRAC.Group4].MemeroyData
+                                                                                   select d.ToString("X2")), NumberStyles.HexNumber);
                 }
                 if (upets.ContainsKey(NBRAC.Group5))//Group5
                 {
-                    OrigindeviceInfo.Group5 = long.Parse(string.Join(string.Empty, from d in upets[NBRAC.Group5].MemeroyData
-                                                                                   select d.ToString("X2")));
+                    OrigindeviceInfo.Group5 = int.Parse(string.Join(string.Empty, from d in upets[NBRAC.Group5].MemeroyData
+                                                                                   select d.ToString("X2")), NumberStyles.HexNumber);
                 }
                 if (upets.ContainsKey(NBRAC.Group6))//Group6
                 {
-                    OrigindeviceInfo.Group6 = long.Parse(string.Join(string.Empty, from d in upets[NBRAC.Group6].MemeroyData
-                                                                                   select d.ToString("X2")));
+                    OrigindeviceInfo.Group6 = int.Parse(string.Join(string.Empty, from d in upets[NBRAC.Group6].MemeroyData
+                                                                                   select d.ToString("X2")), NumberStyles.HexNumber);
                 }
                 if (upets.ContainsKey(NBRAC.Group7))//Group7
                 {
-                    OrigindeviceInfo.Group7 = long.Parse(string.Join(string.Empty, from d in upets[NBRAC.Group7].MemeroyData
-                                                                                   select d.ToString("X2")));
+                    OrigindeviceInfo.Group7 = int.Parse(string.Join(string.Empty, from d in upets[NBRAC.Group7].MemeroyData
+                                                                                   select d.ToString("X2")), NumberStyles.HexNumber);
                 }
                 if (originData.hasAddress)
                 {
@@ -235,15 +235,23 @@ namespace NbIotCmd.Handler
                         var gval5 = TransmitHelper.GetGroupHex(deviceInfo.Group5);
                         var gval6 = TransmitHelper.GetGroupHex(deviceInfo.Group6);
                         var gval7 = TransmitHelper.GetGroupHex(deviceInfo.Group7);
+                        gval0 = TransmitHelper.MergeBytes(gval0.Length, 4, gval0);
+                        gval1 = TransmitHelper.MergeBytes(gval1.Length, 4, gval1);
+                        gval2 = TransmitHelper.MergeBytes(gval2.Length, 4, gval2);
+                        gval3 = TransmitHelper.MergeBytes(gval3.Length, 4, gval3);
+                        gval4 = TransmitHelper.MergeBytes(gval4.Length, 4, gval4);
+                        gval5 = TransmitHelper.MergeBytes(gval5.Length, 4, gval5);
+                        gval6 = TransmitHelper.MergeBytes(gval6.Length, 4, gval6);
+                        gval7 = TransmitHelper.MergeBytes(gval7.Length, 4, gval7);
                         List<byte> GroupBytes = new List<byte>();
-                        GroupBytes.AddRange(new byte[] { NBRAC.Group0, upets[NBRAC.Group0].ChannelNumber, (byte)gval0.Length }.Concat(gval0));
-                        GroupBytes.AddRange(new byte[] { NBRAC.Group1, upets[NBRAC.Group1].ChannelNumber, (byte)gval1.Length }.Concat(gval1));
-                        GroupBytes.AddRange(new byte[] { NBRAC.Group2, upets[NBRAC.Group2].ChannelNumber, (byte)gval2.Length }.Concat(gval2));
-                        GroupBytes.AddRange(new byte[] { NBRAC.Group3, upets[NBRAC.Group3].ChannelNumber, (byte)gval3.Length }.Concat(gval3));
-                        GroupBytes.AddRange(new byte[] { NBRAC.Group4, upets[NBRAC.Group4].ChannelNumber, (byte)gval4.Length }.Concat(gval4));
-                        GroupBytes.AddRange(new byte[] { NBRAC.Group5, upets[NBRAC.Group5].ChannelNumber, (byte)gval5.Length }.Concat(gval5));
-                        GroupBytes.AddRange(new byte[] { NBRAC.Group6, upets[NBRAC.Group6].ChannelNumber, (byte)gval6.Length }.Concat(gval6));
-                        GroupBytes.AddRange(new byte[] { NBRAC.Group7, upets[NBRAC.Group7].ChannelNumber, (byte)gval7.Length }.Concat(gval7));
+                        GroupBytes.AddRange(new byte[] { NBRAC.Group0, upets[NBRAC.Group0].ChannelNumber, 0x04 }.Concat(gval0));
+                        GroupBytes.AddRange(new byte[] { NBRAC.Group1, upets[NBRAC.Group1].ChannelNumber, 0x04 }.Concat(gval1));
+                        GroupBytes.AddRange(new byte[] { NBRAC.Group2, upets[NBRAC.Group2].ChannelNumber, 0x04 }.Concat(gval2));
+                        GroupBytes.AddRange(new byte[] { NBRAC.Group3, upets[NBRAC.Group3].ChannelNumber, 0x04 }.Concat(gval3));
+                        GroupBytes.AddRange(new byte[] { NBRAC.Group4, upets[NBRAC.Group4].ChannelNumber, 0x04 }.Concat(gval4));
+                        GroupBytes.AddRange(new byte[] { NBRAC.Group5, upets[NBRAC.Group5].ChannelNumber, 0x04 }.Concat(gval5));
+                        GroupBytes.AddRange(new byte[] { NBRAC.Group6, upets[NBRAC.Group6].ChannelNumber, 0x04 }.Concat(gval6));
+                        GroupBytes.AddRange(new byte[] { NBRAC.Group7, upets[NBRAC.Group7].ChannelNumber, 0x04 }.Concat(gval7));
                         #endregion
 
                         var TransmitHex = TransmitHelper.SendNBComand(guid.ToByteArray(), GroupBytes.ToArray());

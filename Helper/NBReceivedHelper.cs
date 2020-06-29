@@ -140,6 +140,7 @@ namespace NbIotCmd.Helper
             }
             return result.ToArray();
         }
+        
 
     }
 }

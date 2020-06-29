@@ -43,5 +43,14 @@ namespace NbIotCmd.Helper
             catch { throw; }
             return res.ToArray();
         }
+
+        public static byte[] MergeBytes(int len, int overlen, byte[] content)
+        {
+            var m1 = new List<byte>();
+            byte[] emptybytes = new byte[overlen - len];
+            m1.InsertRange(0, emptybytes);
+            m1.InsertRange(emptybytes.Length, content);
+            return m1.ToArray();
+        }
     }
 }
