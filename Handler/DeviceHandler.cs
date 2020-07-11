@@ -2,6 +2,7 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using MQTTnet.Client.Publishing;
 using NbIotCmd.Config;
 using NbIotCmd.Context;
 using NbIotCmd.Entity;
@@ -18,6 +19,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace NbIotCmd.Handler
 {
@@ -145,42 +147,42 @@ namespace NbIotCmd.Handler
                 if (upets.ContainsKey(NBRAC.Group0))//Group0
                 {
                     OrigindeviceInfo.Group0 = int.Parse(string.Join(string.Empty, from d in upets[NBRAC.Group0].MemeroyData
-                                                                                   select d.ToString("X2")),NumberStyles.HexNumber);
+                                                                                  select d.ToString("X2")), NumberStyles.HexNumber);
                 }
                 if (upets.ContainsKey(NBRAC.Group1))//Group1
                 {
                     OrigindeviceInfo.Group1 = int.Parse(string.Join(string.Empty, from d in upets[NBRAC.Group1].MemeroyData
-                                                                                   select d.ToString("X2")), NumberStyles.HexNumber);
+                                                                                  select d.ToString("X2")), NumberStyles.HexNumber);
                 }
                 if (upets.ContainsKey(NBRAC.Group2))//Group2
                 {
                     OrigindeviceInfo.Group2 = int.Parse(string.Join(string.Empty, from d in upets[NBRAC.Group2].MemeroyData
-                                                                                   select d.ToString("X2")), NumberStyles.HexNumber);
+                                                                                  select d.ToString("X2")), NumberStyles.HexNumber);
                 }
                 if (upets.ContainsKey(NBRAC.Group3))//Group3
                 {
                     OrigindeviceInfo.Group3 = int.Parse(string.Join(string.Empty, from d in upets[NBRAC.Group3].MemeroyData
-                                                                                   select d.ToString("X2")), NumberStyles.HexNumber);
+                                                                                  select d.ToString("X2")), NumberStyles.HexNumber);
                 }
                 if (upets.ContainsKey(NBRAC.Group4))//Group4
                 {
                     OrigindeviceInfo.Group4 = int.Parse(string.Join(string.Empty, from d in upets[NBRAC.Group4].MemeroyData
-                                                                                   select d.ToString("X2")), NumberStyles.HexNumber);
+                                                                                  select d.ToString("X2")), NumberStyles.HexNumber);
                 }
                 if (upets.ContainsKey(NBRAC.Group5))//Group5
                 {
                     OrigindeviceInfo.Group5 = int.Parse(string.Join(string.Empty, from d in upets[NBRAC.Group5].MemeroyData
-                                                                                   select d.ToString("X2")), NumberStyles.HexNumber);
+                                                                                  select d.ToString("X2")), NumberStyles.HexNumber);
                 }
                 if (upets.ContainsKey(NBRAC.Group6))//Group6
                 {
                     OrigindeviceInfo.Group6 = int.Parse(string.Join(string.Empty, from d in upets[NBRAC.Group6].MemeroyData
-                                                                                   select d.ToString("X2")), NumberStyles.HexNumber);
+                                                                                  select d.ToString("X2")), NumberStyles.HexNumber);
                 }
                 if (upets.ContainsKey(NBRAC.Group7))//Group7
                 {
                     OrigindeviceInfo.Group7 = int.Parse(string.Join(string.Empty, from d in upets[NBRAC.Group7].MemeroyData
-                                                                                   select d.ToString("X2")), NumberStyles.HexNumber);
+                                                                                  select d.ToString("X2")), NumberStyles.HexNumber);
                 }
                 if (originData.hasAddress)
                 {
@@ -188,7 +190,7 @@ namespace NbIotCmd.Handler
                                                                                select d.ToString("X")).PadLeft(12, '0');
                 }
                 //保存DeviceInfo信息
-                var deviceInfo = dbContext.TNL_DeviceInfos.FirstOrDefault(d => d.DeviceAddress == OrigindeviceInfo.DeviceAddress);
+                var deviceInfo = dbContext.TNL_DeviceInfos.AsNoTracking().FirstOrDefault(d => d.DeviceAddress == OrigindeviceInfo.DeviceAddress);
                 if (deviceInfo != null)
                 {
                     deviceInfo.LocalDate = NowDate;
@@ -591,20 +593,23 @@ namespace NbIotCmd.Handler
             {
                 await MQTTContext.getInstance().Publish(publishData);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                throw ex;
             }
         }
 
-        public async Task Send(string topic, string payload)
+        public async Task<MqttClientPublishResult> Send(string topic, string payload)
         {
             try
             {
-                await MQTTContext.getInstance().Publish(topic, payload);
+                return await MQTTContext.getInstance().Publish(topic, payload);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                throw ex;
             }
         }
+
     }
 }

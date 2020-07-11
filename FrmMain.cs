@@ -3,7 +3,6 @@ using MQTTnet.Client.Connecting;
 using MQTTnet.Client.Disconnecting;
 using MQTTnet.Client.Options;
 using MQTTnet.Client.Receiving;
-using MQTTnet.Extensions.ManagedClient;
 using MQTTnet.Formatter;
 using NbIotCmd.Notify;
 using System;
@@ -61,8 +60,15 @@ namespace NbIotCmd
         /// <param name="e"></param>
         private async void btnStart_Click(object sender, EventArgs e)
         {
-            await MQTTContext.getInstance().
-                Initialize(txtServer.Text.Trim(), int.Parse(txtPort.Text.Trim()), notification);
+            try
+            {
+                await MQTTContext.getInstance().
+                    Initialize(txtServer.Text.Trim(), int.Parse(txtPort.Text.Trim()), notification);
+            }
+            catch (Exception ex)
+            {
+                showMessage(ex.Message);
+            }
         }
 
     }

@@ -15,7 +15,6 @@ C:\Users\chenhaoming\source\repos\NbIotCmd\obj\Debug\netcoreapp3.1\NbIotCmd.dll
 C:\Users\chenhaoming\source\repos\NbIotCmd\obj\Debug\netcoreapp3.1\NbIotCmd.pdb
 C:\Users\chenhaoming\source\repos\NbIotCmd\obj\Debug\netcoreapp3.1\NbIotCmd.genruntimeconfig.cache
 C:\Users\chenhaoming\source\repos\NbIotCmd\bin\Debug\netcoreapp3.1\MQTTnet.dll
-C:\Users\chenhaoming\source\repos\NbIotCmd\bin\Debug\netcoreapp3.1\MQTTnet.Extensions.ManagedClient.dll
 C:\Users\chenhaoming\source\repos\NbIotCmd\bin\Debug\netcoreapp3.1\Newtonsoft.Json.dll
 C:\Users\chenhaoming\source\repos\NbIotCmd\bin\Debug\netcoreapp3.1\Microsoft.Bcl.AsyncInterfaces.dll
 C:\Users\chenhaoming\source\repos\NbIotCmd\bin\Debug\netcoreapp3.1\Microsoft.Bcl.HashCode.dll

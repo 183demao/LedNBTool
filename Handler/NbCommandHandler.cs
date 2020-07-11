@@ -1,5 +1,6 @@
 ﻿using Led.Tools;
 using Microsoft.EntityFrameworkCore.Storage;
+using MQTTnet.Client.Publishing;
 using NbIotCmd.Entity;
 using NbIotCmd.Handler;
 using NbIotCmd.Helper;
@@ -48,7 +49,7 @@ namespace NbIotCmd
                 };
                 await dbContext.NbCommands.AddAsync(nbCommand);//先插入发送命令表中
                 await dbContext.SaveChangesAsync();//保证数据库中存在值
-                await Send(transmitData.Topic, nbCommand.CmdData);
+                var res = await Send(transmitData.Topic, nbCommand.CmdData);
             }
             catch (Exception ex)
             {
@@ -67,19 +68,21 @@ namespace NbIotCmd
             {
                 await MQTTContext.getInstance().Publish(publishData);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                throw ex;
             }
         }
 
-        public async Task Send(string topic, string payload)
+        public async Task<MqttClientPublishResult> Send(string topic, string payload)
         {
             try
             {
-                await MQTTContext.getInstance().Publish(topic, payload);
+                return await MQTTContext.getInstance().Publish(topic, payload);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                throw ex;
             }
         }
     }

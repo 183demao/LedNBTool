@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "4jSRnAAyUS/fpjdMUhTztV6h+O9wnkva+TMjmUmUvvuQHOtV0h6F9vG/ACtwLLCHKr10Ftn7tfi4xDlwK0TbzQ==",
+  "dgSpecHash": "a5k9J0+2SOM4qDc7wC7K+oa3gEyfwG2jgdJSgvE2OSavSSqjf/EZRdCZedKB6/s/+kjJiDbubxPIHZLgwBS3fA==",
   "success": true,
   "projectFilePath": "C:\\Users\\chenhaoming\\source\\repos\\NbIotCmd\\NbIotCmd.csproj",
   "expectedPackageFiles": [
@@ -40,7 +40,6 @@
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\microsoft.win32.primitives\\4.3.0\\microsoft.win32.primitives.4.3.0.nupkg.sha512",
     "C:\\Users\\chenhaoming\\.nuget\\packages\\microsoft.win32.registry\\4.5.0\\microsoft.win32.registry.4.5.0.nupkg.sha512",
     "C:\\Users\\chenhaoming\\.nuget\\packages\\mqttnet\\3.0.8\\mqttnet.3.0.8.nupkg.sha512",
-    "C:\\Users\\chenhaoming\\.nuget\\packages\\mqttnet.extensions.managedclient\\3.0.8\\mqttnet.extensions.managedclient.3.0.8.nupkg.sha512",
     "C:\\Users\\chenhaoming\\.nuget\\packages\\netstandard.library\\2.0.0\\netstandard.library.2.0.0.nupkg.sha512",
     "C:\\Users\\chenhaoming\\.nuget\\packages\\newtonsoft.json\\12.0.3\\newtonsoft.json.12.0.3.nupkg.sha512",
     "C:\\Users\\chenhaoming\\.nuget\\packages\\runtime.debian.8-x64.runtime.native.system.security.cryptography.openssl\\4.3.2\\runtime.debian.8-x64.runtime.native.system.security.cryptography.openssl.4.3.2.nupkg.sha512",

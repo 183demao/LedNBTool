@@ -31,9 +31,10 @@ namespace NbIotCmd.Handler
                 reply.MessageID = int.Parse(string.Join("", originData.messsageId));
                 reply.Timestamp = Now;
                 reply.ReplyData = DataHelper.BytesToHexStr(originData.data);
-                reply.DeviceAddress = string.Join("", from d in originData.addressDomain select d.ToString("X")).PadLeft(12, '0');
+                if (originData.hasAddress)
+                    reply.DeviceAddress = string.Join("", from d in originData.addressDomain select d.ToString("X")).PadLeft(12, '0');
                 reply.LocalDate = Now;
-                reply.SimpleTime = Now;
+                reply.SampTime = Now;
                 var lightInfo = await dbContext.TNL_TunnelLights
                     .AsNoTracking()
                     .FirstOrDefaultAsync(d => d.LightPhysicalAddress_TX.Contains(reply.DeviceAddress));

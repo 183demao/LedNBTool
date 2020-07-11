@@ -9,7 +9,6 @@
       "NbIotCmd/1.0.0": {
         "dependencies": {
           "MQTTnet": "3.0.8",
-          "MQTTnet.Extensions.ManagedClient": "3.0.8",
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "3.1.3",
           "Microsoft.EntityFrameworkCore": "3.1.3",
           "Microsoft.EntityFrameworkCore.SqlServer": "3.1.3",
@@ -396,17 +395,6 @@
         },
         "runtime": {
           "lib/netstandard2.0/MQTTnet.dll": {
-            "assemblyVersion": "3.0.8.0",
-            "fileVersion": "3.0.8.0"
-          }
-        }
-      },
-      "MQTTnet.Extensions.ManagedClient/3.0.8": {
-        "dependencies": {
-          "MQTTnet": "3.0.8"
-        },
-        "runtime": {
-          "lib/netstandard2.0/MQTTnet.Extensions.ManagedClient.dll": {
             "assemblyVersion": "3.0.8.0",
             "fileVersion": "3.0.8.0"
           }
@@ -1527,13 +1515,6 @@
       "sha512": "sha512-obMCW3VPxmb/Mpy/1Rvmt0l9p+EYcTUgC+HYN4B4/Dz8B93JhWEiy3VAvJfzTAb/onjwxbe53bD3bv2COVZyqA==",
       "path": "mqttnet/3.0.8",
       "hashPath": "mqttnet.3.0.8.nupkg.sha512"
-    },
-    "MQTTnet.Extensions.ManagedClient/3.0.8": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-dJHDjxjFktP6n9pIfRBg7KzriTNDCWPfCe9XovEt0kQUmTJ1wbZnW6m1cNXElppjz8kWIKVzeyIrZMdmRQNSVg==",
-      "path": "mqttnet.extensions.managedclient/3.0.8",
-      "hashPath": "mqttnet.extensions.managedclient.3.0.8.nupkg.sha512"
     },
     "NETStandard.Library/2.0.0": {
       "type": "package",
