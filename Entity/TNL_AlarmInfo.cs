@@ -87,6 +87,16 @@ namespace NbIotCmd.Entity
         ///</summary>	                                        
         public int Alarm4 { get; set; }
         /// <summary>
+        /// 低电流告警
+        /// </summary>
+    
+        public int Alarm5 { get; set; }
+        /// <summary>
+        /// 低功率告警
+        /// </summary>
+        
+        public int Alarm6 { get; set; }
+        /// <summary>
         ///本地时间
         ///</summary>	                                        
         public DateTime LocalDate { get; set; }

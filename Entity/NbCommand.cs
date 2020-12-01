@@ -1,13 +1,15 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Net.WebSockets;
+
 namespace NbIotCmd.Entity
 {
     /// <summary>
     /// 发送指令表
     /// </summary>
     [Table("NbCommand")]
-    public class NbCommand  
+    public class NbCommand
     {
         /// <summary>主键自增</summary>	                                   
         [Key]
@@ -35,4 +37,5 @@ namespace NbIotCmd.Entity
         /// <summary>事件发送时间</summary>	                               
         public DateTime EventTime { get; set; }
     }
+   
 }

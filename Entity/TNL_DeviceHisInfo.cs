@@ -8,16 +8,16 @@ namespace NbIotCmd.Entity
     /// <summary>
     /// NB设备信息表
     /// </summary>
-    [Table("TNL_DeviceInfo")]
-    public class TNL_DeviceInfo
+    [Table("TNL_DeviceInfo_His")]
+    public class TNL_DeviceHisInfo
     {
         /// <summary>主键自增</summary>	                         
         [Key]
-        public long ID { get; set; }
+        public long HISID { get; set; }
         /// <summary>
-        /// 单灯对象ID
+        ///  单灯对象ID
         /// </summary>
-        public long? TunnelLight_ID { get; set; }
+        public long TunnelLight_ID { get; set; }
         /// <summary>
         /// 本地时间
         /// </summary>
@@ -25,7 +25,7 @@ namespace NbIotCmd.Entity
         /// <summary>
         /// 通道号
         /// </summary>
-        public int ChannelNumber { get; set; }
+        public string ChannelNumber { get; set; }
         /// <summary>
         /// 本地时间
         /// </summary>
@@ -87,9 +87,5 @@ namespace NbIotCmd.Entity
         /// </summary>
         public string DeviceAddress { get; set; }
 
-        public static implicit operator TNL_DeviceInfo(EntityEntry<TNL_DeviceInfo> v)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

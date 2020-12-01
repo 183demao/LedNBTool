@@ -43,6 +43,9 @@ namespace NbIotCmd
 
             //var lightHandler = IocManager.ServiceProvider.GetService<LightHandler>();
 
+
+
+
             // Æô¶¯Ö÷´°Ìå
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.EnableVisualStyles();

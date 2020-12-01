@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.txtMessage = new System.Windows.Forms.TextBox();
             this.btnStart = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
@@ -38,6 +39,8 @@
             this.txtPassword = new System.Windows.Forms.TextBox();
             this.txtUserName = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
+            this.btnStop = new System.Windows.Forms.Button();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
             // txtMessage
@@ -53,6 +56,7 @@
             this.txtMessage.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txtMessage.Size = new System.Drawing.Size(762, 421);
             this.txtMessage.TabIndex = 0;
+            this.txtMessage.TextChanged += new System.EventHandler(this.txtMessage_TextChanged);
             // 
             // btnStart
             // 
@@ -133,11 +137,28 @@
             this.label4.TabIndex = 2;
             this.label4.Text = "UserName";
             // 
+            // btnStop
+            // 
+            this.btnStop.Location = new System.Drawing.Point(629, 27);
+            this.btnStop.Name = "btnStop";
+            this.btnStop.Size = new System.Drawing.Size(94, 57);
+            this.btnStop.TabIndex = 4;
+            this.btnStop.Text = "Stop";
+            this.btnStop.UseVisualStyleBackColor = true;
+            this.btnStop.Click += new System.EventHandler(this.btnStop_Click);
+            // 
+            // timer1
+            // 
+            this.timer1.Enabled = true;
+            this.timer1.Interval = 5000;
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(786, 539);
+            this.Controls.Add(this.btnStop);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.txtUserName);
             this.Controls.Add(this.txtPassword);
@@ -168,6 +189,8 @@
         private System.Windows.Forms.TextBox txtPassword;
         private System.Windows.Forms.TextBox txtUserName;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Button btnStop;
+        private System.Windows.Forms.Timer timer1;
     }
 }
 

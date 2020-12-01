@@ -39,7 +39,7 @@ namespace NbIotCmd.Handler
                     .AsNoTracking()
                     .FirstOrDefaultAsync(d => d.LightPhysicalAddress_TX.Contains(reply.DeviceAddress));
                 if (lightInfo != null) reply.TunnelLight_ID = lightInfo.TunnelLight_ID;
-                else reply.TunnelLight_ID = -9999;//没找到这个灯具
+                else reply.TunnelLight_ID = 0;//没找到这个灯具
                 await dbContext.AddAsync(reply);
                 var nbcomand = await dbContext.NbCommands
                     .AsNoTracking()

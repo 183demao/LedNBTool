@@ -1,0 +1,5 @@
+2020-11-27 10:03:08.1027------>>NbIotCmd.MQTTContext Topic:cmdstr/light/358826100269329/53D982C376200C469F5168FE20D0553D,Payload:951C000000000000004B07E40B1B050A003753D982C376200C469F5168FE20D0553D0500010000006E2B59System.FormatException: Input string was not in a correct format.
+   at System.Number.ThrowOverflowOrFormatException(ParsingStatus status, TypeCode type)
+   at System.Byte.Parse(String s, NumberStyles style)
+   at NbIotCmd.Helper.HexFormatHelper.StringConvertHexBytes(String Data) in C:\Users\chenhaoming\source\repos\NbIotCmd\Helper\HexFormatHelper.cs:line 21
+   at NbIotCmd.MQTTContext.OnMqttMessageReceived(MqttApplicationMessageReceivedEventArgs obj) in C:\Users\chenhaoming\source\repos\NbIotCmd\Context\MQTTContext.cs:line 208

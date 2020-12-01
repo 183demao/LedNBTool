@@ -66,13 +66,26 @@ namespace NbIotCmd
         /// 帧尾
         /// </summary>
         public byte frameTail { get; set; }
-        //是否有地址
+        /// <summary>
+        /// 是否有地址
+        /// </summary>
         public bool hasAddress { get; set; }
-        //是否有时间戳
+        /// <summary>
+        /// 是否有时间戳
+        /// </summary>
         public bool hasTimeStramp { get; set; }
+        /// <summary>
+        /// 是否有UUID
+        /// </summary>
         public bool hasUUID { get; set; }
-        public Dictionary<byte, UploadEntity> uploadEntitys { get; set; }
-        //原始数据
+        /// <summary>
+        /// 是否结束帧
+        /// </summary>
+        public bool isEndFrame { get; set; }
+        public Dictionary<byte, Dictionary<byte, UploadEntity>> uploadEntitys { get; set; }
+        /// <summary>
+        /// 原始数据
+        /// </summary>
         public byte[] OriginData { get; set; }
     }
     public class UploadEntity : IBaseMQTTEntity

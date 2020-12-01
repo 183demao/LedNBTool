@@ -1,4 +1,5 @@
 ﻿using Led.Tools;
+using NbIotCmd.Config;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,14 +10,14 @@ namespace NbIotCmd.Helper
 {
     public class TransmitHelper
     {
-        public static byte[] SendNBComand(byte[] GUID, byte[] DATA)
+        public static byte[] SendNBComand(byte[] GUID, byte[] DATA, byte commandCode = (byte)NBCommondCode.ParamsSetting)
         {
             // $"9A13{GUID}14000100{LENGTH}{DATA}{CRC}A9";
             List<byte> result = new List<byte>();
             result.Add(0x9A);
             result.Add(0x13);
             result.AddRange(GUID);//GUID
-            result.Add(0x04);
+            result.Add(commandCode);
             result.Add(0x00);
             result.Add(0x01);
             result.Add(0x00);

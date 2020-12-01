@@ -52,6 +52,7 @@ namespace NbIotCmd.Helper
                 uploadOriginData.frameType = messages[index += 1];//1
                 //帧类型
                 string frametype = Convert.ToString(uploadOriginData.frameType, 2).PadLeft(8, '0');
+                uploadOriginData.isEndFrame = frametype.Substring(2, 1) == "0";
                 uploadOriginData.hasUUID = frametype.Substring(3, 1) == "1";//uuid
                 uploadOriginData.hasAddress = frametype.Substring(4, 1) == "1";
                 uploadOriginData.hasTimeStramp = frametype.Substring(5, 1) == "1";
@@ -100,25 +101,38 @@ namespace NbIotCmd.Helper
             return uploadOriginData;
         }
 
-        public static void GetUploadEntity(Dictionary<byte, UploadEntity> result, byte[] originData, int index = 0)
+        public static void GetUploadEntity(Dictionary<byte, Dictionary<byte, UploadEntity>> result, byte[] originData, int index = 0)
         {
             try
             {
-                result = result ?? new Dictionary<byte, UploadEntity>();
+                result = result ?? new Dictionary<byte, Dictionary<byte, UploadEntity>>();
                 UploadEntity uploadData = new UploadEntity();
+                if (originData.Length <= 0) return;
                 uploadData.ChannelNumber = originData[index];
                 uploadData.MemeroyID = originData[index + 1];
                 uploadData.MemeroyLength = originData[index + 2];
                 uploadData.MemeroyData = GetHexBytes(originData, index + 3, uploadData.MemeroyLength);
                 //uploadData.MemeroyData = uploadData.MemeroyData.Reverse().ToArray();
-                if (!result.ContainsKey(uploadData.MemeroyID)) result.Add(uploadData.MemeroyID, uploadData);
+                if (!result.ContainsKey(uploadData.ChannelNumber))
+                {
+                    result.Add(uploadData.ChannelNumber, new Dictionary<byte, UploadEntity> {
+                        { uploadData.MemeroyID,uploadData}
+                    });
+                }
+                else
+                {
+                    if (!result[uploadData.ChannelNumber].ContainsKey(uploadData.MemeroyID))
+                        result[uploadData.ChannelNumber].Add(uploadData.MemeroyID, uploadData);
+                }
                 index = index + 3 + uploadData.MemeroyLength;
                 if (index > originData.Length - 1) return;
                 GetUploadEntity(result, originData, index);
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                Console.Write($"Index:{index}");
+                //UPLogger.Error(e.ToString());
+                //Console.Write($"Index:{index}");
+                throw e;
             }
         }
         private static string GetHexString(byte[] data, int startIndex, int endIndex)
@@ -140,7 +154,7 @@ namespace NbIotCmd.Helper
             }
             return result.ToArray();
         }
-        
+
 
     }
 }

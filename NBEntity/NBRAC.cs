@@ -130,7 +130,7 @@ namespace NbIotCmd.NBEntity
         /// <summary>
         ///有功功率
         ///</summary>	 
-        public static readonly byte PowerFeature = 0x0D;
+        public static readonly byte PowerFeature = 0x10;
         /// <summary>
         /// 功率因素
         /// </summary>
@@ -151,6 +151,10 @@ namespace NbIotCmd.NBEntity
         ///光感值
         ///</summary>	   
         public static readonly byte LuminousIntensity = 0x15;
+        /// <summary>
+        /// 单双灯类型
+        /// </summary>
+        public static readonly byte LightType = 0x40;
         #endregion
 
         #region 警报类型
@@ -161,23 +165,31 @@ namespace NbIotCmd.NBEntity
         /// <summary>
         /// 过流告警
         /// </summary>
-        public static readonly byte Alarm0 = 0x29;
+        public static readonly int Alarm0 = 0;
         /// <summary>
         /// 过功率告警
         /// </summary>
-        public static readonly byte Alarm1 = 0x2A;
+        public static readonly int Alarm1 = 1;
+        /// <summary>           
+        /// 电容告警             
+        /// </summary>          
+        public static readonly int Alarm2 = 2;
+        /// <summary>          
+        /// 光源故障告警        
+        /// </summary>         
+        public static readonly int Alarm3 = 3;
+        /// <summary>           
+        /// 熔丝故障(掉电)告警   
+        /// </summary>          
+        public static readonly int Alarm4 = 4;
         /// <summary>
-        /// 电容告警
+        /// 低电流告警
         /// </summary>
-        public static readonly byte Alarm2 = 0x2B;
+        public static readonly int Alarm5 = 5;
         /// <summary>
-        /// 光源故障告警
+        /// 低功率告警
         /// </summary>
-        public static readonly byte Alarm3 = 0x2C;
-        /// <summary>
-        /// 熔丝故障(掉电)告警
-        /// </summary>
-        public static readonly byte Alarm4 = 0x2D;
+        public static readonly int Alarm6 = 6;
 
         #endregion
     }

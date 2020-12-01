@@ -11,10 +11,14 @@ using MQTTnet.Protocol;
 using NbIotCmd.Context;
 using NbIotCmd.Helper;
 using NbIotCmd.Notify;
+using NLog;
 using System;
 using System.Collections.Generic;
+using System.Drawing.Imaging;
 using System.Globalization;
 using System.Linq;
+using System.Reflection;
+using System.Security.Principal;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,6 +29,7 @@ namespace NbIotCmd
     {
         private static readonly MQTTContext instance = new MQTTContext();
         private WinformAsyncNotification notification;
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
 
         private MQTTContext()
         { }
@@ -32,6 +37,13 @@ namespace NbIotCmd
         public static MQTTContext getInstance()
         {
             return instance;
+        }
+        public bool? Connected
+        {
+            get
+            {
+                return MqttClient?.IsConnected;
+            }
         }
 
         private static IMqttClient MqttClient;
@@ -191,25 +203,27 @@ namespace NbIotCmd
                 {
                     string payloadstr = Encoding.UTF8.GetString(payload);
                     string padleftStr = string.Empty;
-                    List<byte> list = new List<byte>();
                     payloadstr = payloadstr.Replace("\0", string.Empty);
-                    for (int i = 0; i < payloadstr.Length; i++)
-                    {
-                        if (i % 2 == 0) list.Add(byte.Parse(payloadstr.Substring(i, 2), NumberStyles.HexNumber));
-                    }
-                    payload = list.ToArray();
+                    logger.Info(payloadstr);
+                    payload = HexFormatHelper.StringConvertHexBytes(payloadstr);
                 }
                 var uploadOrigin = NBReceivedHelper.AnalyzeMessage(payload);
                 if (uploadOrigin != null)
                 {
-                    uploadOrigin.uploadEntitys = new Dictionary<byte, UploadEntity>();
-                    NBReceivedHelper.GetUploadEntity(uploadOrigin.uploadEntitys, uploadOrigin.data, 0);
-                    await UploadContext.GetInstance().GetUploadSchedule().Run(uploadOrigin);
+                    if (uploadOrigin.commandCode == 0x04 || uploadOrigin.commandCode == 0x0E)//参数设置和数据上报
+                    {
+                        uploadOrigin.uploadEntitys = new Dictionary<byte, Dictionary<byte, UploadEntity>>();
+                        NBReceivedHelper.GetUploadEntity(uploadOrigin.uploadEntitys, uploadOrigin.data, 0);
+                        await UploadContext.GetInstance().GetUploadSchedule().Run(uploadOrigin);
+                    }
                 }
             }
             catch (Exception ex)
             {
-                throw;
+                var strPayLoad = HexFormatHelper.HexBytesConvertString(payload);
+                logger.Error(this.GetType().FullName + " Topic:" + topic + ",Payload:" + strPayLoad + ex.ToString());
+                UPLogger.Show(ex.Message);
+                //throw;
             }
         }
         /// <summary>
@@ -225,21 +239,41 @@ namespace NbIotCmd
             }
             return Task.CompletedTask;
         }
+        /// <summary>
+        ///  关闭连接
+        /// </summary>
+        /// <returns></returns>
+        public async Task Close()
+        {
+            await MqttClient.DisconnectAsync();
+            MqttClient = null;
+        }
 
         private async Task OnMqttConnectedAsync(MqttClientConnectedEventArgs obj)
         {
             if (MqttClient.IsConnected)
             {
+
                 ///上位机默认订阅UPLOAD
                 await Subscribe(new List<string>
                 {
-                    "uploadhex/861410047743793",
-                    "light/861410047743793",
-                    "uploadstr/#",
-                    //"cmdstr/#",
-                    "cmdstr/light/861410047743793",
-                    "cmdhex/#",
+                    "uploadhex/358826100269329",
+                    //"uploadhex/861410047695456",
+                    //"uploadhex/861410047695456",
+                    "uploadstr/358826100269329",
+                    "cmdstr/light/#",
+                    "cmdhex/light/#",
                 });
+                ///上位机默认订阅UPLOAD
+                //await Subscribe(new List<string>
+                //{
+                //    "uploadhex/861410047743793",
+                //    "light/861410047743793",
+                //    "uploadstr/#",
+                //    //"cmdstr/#",
+                //    "cmdstr/light/861410047743793",
+                //    "cmdhex/#",
+                //});
             }
             else
             {

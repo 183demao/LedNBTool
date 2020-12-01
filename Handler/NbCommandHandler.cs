@@ -37,7 +37,7 @@ namespace NbIotCmd
                 DateTime NowTime = DateTime.Now;
                 NbCommand nbCommand = new NbCommand
                 {
-                    CmdCode = "0x04",
+                    CmdCode = transmitData.CommandCode,
                     MessageID = transmitData.MesssageID,
                     CmdData = DataHelper.BytesToHexStr(transmitData.Data),
                     CmdId = transmitData.UUID.ToString().ToUpper(),
